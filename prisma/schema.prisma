@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id               String     @id @default(cuid())
+  email            String     @unique
+  emailVerified    DateTime?
+  name             String?
+  image            String?
+  referralCode     String     @unique
+  referredById     String?
+  referredBy       User?      @relation("Referrals", fields: [referredById], references: [id])
+  referrals        User[]     @relation("Referrals")
+  plan             String     @default("free") // free, starter, pro, agency
+  stripeCustomerId String?
+  balance          Float      @default(0)
+  totalEarnings    Float      @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  roasts      Roast[]
+  payments    Payment[]
+  feedback    Feedback[]
+  referralsReceived Referral[] @relation("ReferralReceiver")
+  referralsSent     Referral[] @relation("ReferralSender")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Roast {
+  id              String   @id @default(cuid())
+  url             String
+  domain          String
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+  brutalityLevel  Int      @default(2)
+  overallScore    Float
+  vibe            String
+  totalMonthlyLoss Float
+  yearlyLoss      Float
+  scoresJson      String   // JSON string of category scores
+  roastJson       String   // JSON string of roast text per category
+  screenshotUrl   String?
+  htmlContent     String?
+  lighthouseJson  String?  // JSON string of lighthouse-style metrics
+  feedback        String?  // user rating: savage_af, funny, meh, boring
+  aiModel         String   @default("gpt-4o-mini")
+  isPublic        Boolean  @default(true)
+  shareCount      Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  sharedRoasts SharedRoast[]
+  feedbacks    Feedback[]
+
+  @@index([url])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Referral {
+  id          String   @id @default(cuid())
+  referrerId  String
+  referrer    User     @relation("ReferralSender", fields: [referrerId], references: [id])
+  referredId  String
+  referred    User     @relation("ReferralReceiver", fields: [referredId], references: [id])
+  level       Int      // 1, 2, or 3
+  commission  Float    @default(0)
+  totalEarned Float    @default(0)
+  createdAt   DateTime @default(now())
+
+  @@unique([referrerId, referredId])
+  @@index([referrerId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  roastId   String
+  roast     Roast    @relation(fields: [roastId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  rating    String   // savage_af, funny, meh, boring
+  createdAt DateTime @default(now())
+
+  @@index([roastId])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  amount          Float
+  currency        String   @default("usd")
+  type            String   // subscription, one_time, roast_pack, competitor_battle
+  stripePaymentId String   @unique
+  status          String   @default("pending") // pending, completed, failed, refunded
+  plan            String?  // if subscription: free, starter, pro, agency
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+}
+
+model SharedRoast {
+  id         String   @id @default(cuid())
+  roastId    String
+  roast      Roast    @relation(fields: [roastId], references: [id], onDelete: Cascade)
+  platform   String   // twitter, linkedin, reddit, copy_link
+  createdAt  DateTime @default(now())
+
+  @@index([roastId])
+}
