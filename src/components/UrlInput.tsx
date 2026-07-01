@@ -41,6 +41,7 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
         return;
       }
 
+      localStorage.setItem("lastRoast", JSON.stringify(data));
       router.push(`/roast/${data.id}`);
     } catch {
       toast.error("Something went wrong. Try again!");
