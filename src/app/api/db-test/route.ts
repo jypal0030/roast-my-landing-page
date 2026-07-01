@@ -5,9 +5,8 @@ export async function GET() {
     const url = process.env.DATABASE_URL;
     if (!url) return Response.json({ ok: false, error: "No DATABASE_URL" });
 
-    const { PrismaClient } = require("@prisma/client");
-    const prisma = new PrismaClient({});
-    
+    // Use our lazy prisma proxy
+    const { prisma } = await import("@/lib/prisma");
     const count = await prisma.user.count();
     return Response.json({ ok: true, url: url.substring(0, 30) + "...", userCount: count });
   } catch (e: any) {
