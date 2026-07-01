@@ -6,7 +6,7 @@ export async function GET() {
     if (!url) return Response.json({ ok: false, error: "No DATABASE_URL" });
 
     const { PrismaClient } = require("@prisma/client");
-    const prisma = new PrismaClient();
+    const prisma = new PrismaClient({});
     
     const count = await prisma.user.count();
     return Response.json({ ok: true, url: url.substring(0, 30) + "...", userCount: count });
