@@ -1,8 +1,13 @@
-import NextAuth from "next-auth";
-import { authOptions } from "@/lib/auth";
-
 export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
 
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export async function GET(req: Request) {
+  const { default: NextAuth } = await import("next-auth");
+  const { authOptions } = await import("@/lib/auth");
+  return NextAuth(authOptions)(req as any);
+}
+
+export async function POST(req: Request) {
+  const { default: NextAuth } = await import("next-auth");
+  const { authOptions } = await import("@/lib/auth");
+  return NextAuth(authOptions)(req as any);
+}
