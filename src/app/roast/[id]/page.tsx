@@ -1,47 +1,20 @@
-import { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
-import { RoastResultView } from "@/components/RoastResultView";
+import { Flame } from "lucide-react";
+import Link from "next/link";
 
-interface Props {
-  params: Promise<{ id: string }>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const roast = await prisma.roast.findUnique({
-    where: { id },
-    select: { domain: true, overallScore: true, vibe: true },
-  });
-
-  if (!roast) return { title: "Roast Not Found" };
-
-  return {
-    title: `${roast.domain} scored ${roast.overallScore}/10 — "${roast.vibe}"`,
-    description: `Our AI roasted ${roast.domain} and gave it a ${roast.overallScore}/10. Vibe: "${roast.vibe}". See the full savage review.`,
-    openGraph: {
-      title: `We Roasted ${roast.domain} — Score: ${roast.overallScore}/10`,
-      description: `Vibe: "${roast.vibe}". See the full brutal review.`,
-    },
-  };
-}
-
-export default async function RoastPage({ params }: Props) {
-  const { id } = await params;
-  const roast = await prisma.roast.findUnique({ where: { id } });
-
-  if (!roast) notFound();
-
-  const scores = JSON.parse(roast.scoresJson);
-  const roastData = JSON.parse(roast.roastJson);
-  const lighthouse = roast.lighthouseJson ? JSON.parse(roast.lighthouseJson) : null;
-
+export default function RoastDetailPage() {
   return (
-    <RoastResultView
-      roast={roast}
-      scores={scores}
-      roastData={roastData}
-      lighthouse={lighthouse}
-    />
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="text-center">
+        <Flame className="h-12 w-12 text-fire-500 mx-auto mb-4" />
+        <h1 className="font-display text-4xl text-white mb-4">Roast Detail</h1>
+        <p className="text-ash-300 text-lg max-w-md mb-6">
+          Roast history requires a database. The roast engine is live —
+          go roast a landing page now!
+        </p>
+        <Link href="/" className="inline-flex items-center gap-2 rounded-lg bg-fire-500 px-6 py-3 text-sm font-semibold text-white hover:bg-fire-600">
+          Roast a Website
+        </Link>
+      </div>
+    </div>
   );
 }
