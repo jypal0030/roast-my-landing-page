@@ -60,13 +60,13 @@ export function Header() {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => signIn()}
+            <Link
+              href="/auth/signin"
               className="flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 transition-colors"
             >
               <User className="h-4 w-4" />
               Sign In
-            </button>
+            </Link>
           )}
         </nav>
 
@@ -102,12 +102,12 @@ export function Header() {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => signIn()}
-                className="w-full rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600"
+              <Link
+                href="/auth/signin"
+                className="w-full rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 text-center"
               >
                 Sign In
-              </button>
+              </Link>
             )}
           </nav>
         </div>
