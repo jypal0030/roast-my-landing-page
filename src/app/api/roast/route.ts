@@ -3,7 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateRoast } from "@/lib/openai";
-import { captureScreenshot, extractHtmlContent, getBasicLighthouseData } from "@/lib/screenshot";
+import { generateFallbackRoast } from "@/lib/fallback";
+import { extractHtmlContent, getBasicLighthouseData } from "@/lib/screenshot";
 
 const FREE_ROAST_LIMIT = 1; // per day for free users
 const PLAN_LIMITS: Record<string, number> = {
@@ -87,19 +88,22 @@ export async function POST(req: NextRequest) {
       // Simple anonymous limiting will be handled by Vercel rate limiting in prod
     }
 
-    // Step 1: Run screenshot + HTML + Lighthouse in parallel
-    const [screenshot, htmlContent, lighthouse] = await Promise.all([
-      captureScreenshot(normalizedUrl).catch(() => null),
+    // Step 1: Extract HTML + Lighthouse data
+    const [htmlContent, lighthouse] = await Promise.all([
       extractHtmlContent(normalizedUrl),
       getBasicLighthouseData(normalizedUrl),
     ]);
 
-    // Step 2: Generate AI roast
-    const roastResult = await generateRoast(
-      htmlContent,
-      lighthouse,
-      brutalityLevel
-    );
+    // Step 2: Generate AI roast (fallback if OpenAI quota exceeded)
+    let roastResult;
+    let aiModel = "gpt-4o-mini";
+    try {
+      roastResult = await generateRoast(htmlContent, lighthouse, brutalityLevel);
+    } catch (aiError) {
+      console.error("OpenAI failed, using fallback:", aiError);
+      roastResult = generateFallbackRoast(htmlContent, lighthouse, brutalityLevel);
+      aiModel = "fallback-demo";
+    }
 
     // Step 3: Save to database
     const roast = await prisma.roast.create({
@@ -123,10 +127,10 @@ export async function POST(req: NextRequest) {
           aboveTheFold: roastResult.aboveTheFold,
         }),
         roastJson: JSON.stringify(roastResult),
-        screenshotUrl: screenshot,
+        screenshotUrl: null,
         htmlContent: htmlContent.substring(0, 5000),
         lighthouseJson: JSON.stringify(lighthouse),
-        aiModel: "gpt-4o-mini",
+        aiModel,
       },
     });
 
