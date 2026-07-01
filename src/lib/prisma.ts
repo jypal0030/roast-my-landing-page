@@ -4,11 +4,10 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// Lazy PrismaClient — only connects on first query, never at import time
-function createPrismaClient() {
-  return new PrismaClient();
-}
+const prismaClient = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+});
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+export const prisma = globalForPrisma.prisma ?? prismaClient;
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
