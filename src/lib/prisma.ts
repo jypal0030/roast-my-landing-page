@@ -1,21 +1,18 @@
-import type { PrismaClient as PrismaClientType } from "@prisma/client";
-
 let _prisma: any = null;
 
-function getPrisma(): PrismaClientType {
+function getPrisma(): any {
   if (_prisma) return _prisma;
-  // Use dynamic require for lazy init, but import type at module level
-  const mod: any = require("@prisma/client");
-  _prisma = new mod.PrismaClient({
-    datasources: { db: { url: process.env.DATABASE_URL } },
+  const { PrismaClient } = require("@prisma/client") as any;
+  _prisma = new PrismaClient({
+    accelerateUrl: process.env.DATABASE_URL,
   });
   return _prisma;
 }
 
-export const prisma = new Proxy({} as PrismaClientType, {
-  get(_target, prop: string) {
-    const client = getPrisma();
-    const value = (client as any)[prop];
-    return typeof value === "function" ? value.bind(client) : value;
+export const prisma = new Proxy({} as any, {
+  get(_t: any, prop: string) {
+    const c = getPrisma();
+    const v = c[prop];
+    return typeof v === "function" ? v.bind(c) : v;
   },
 });
