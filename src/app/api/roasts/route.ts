@@ -1,23 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const order = searchParams.get("order") || "desc";
-  const limit = Math.min(parseInt(searchParams.get("limit") || "12"), 50);
-
-  const roasts = await prisma.roast.findMany({
-    where: { isPublic: true },
-    orderBy: { overallScore: order as "asc" | "desc" },
-    take: limit,
-    select: {
-      id: true,
-      domain: true,
-      overallScore: true,
-      vibe: true,
-      createdAt: true,
-    },
-  });
-
-  return NextResponse.json(roasts);
+export async function GET() {
+  return NextResponse.json([]);
 }
