@@ -1,13 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
-import { prisma } from "./prisma";
-
-function generateReferralCode(name?: string | null): string {
-  const prefix = name ? name.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 4) : "USER";
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `${prefix}-${random}`;
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -22,71 +15,28 @@ export const authOptions: NextAuthOptions = {
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async signIn({ user, account }) {
-      if (account && user.email) {
-        // Find or create user in our database
-        let dbUser = await prisma.user.findUnique({ where: { email: user.email } });
-
-        if (!dbUser) {
-          let referralCode = generateReferralCode(user.name);
-          let exists = await prisma.user.findUnique({ where: { referralCode } });
-          while (exists) {
-            referralCode = generateReferralCode(user.name);
-            exists = await prisma.user.findUnique({ where: { referralCode } });
-          }
-
-          dbUser = await prisma.user.create({
-            data: {
-              email: user.email,
-              name: user.name,
-              image: user.image,
-              referralCode,
-            },
-          });
-        } else {
-          // Update name/image on re-login
-          await prisma.user.update({
-            where: { id: dbUser.id },
-            data: { name: user.name, image: user.image },
-          });
-        }
-      }
-      return true;
+    async signIn({ user }) {
+      // Allow all sign-ins — JWT stores user info without DB
+      return !!user.email;
     },
-    async jwt({ token, user }) {
-      if (user?.email) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email },
-          select: { id: true, plan: true, referralCode: true, balance: true },
-        });
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.plan = dbUser.plan;
-          token.referralCode = dbUser.referralCode;
-          token.balance = dbUser.balance;
-        }
-      }
-      // Refresh on each request
-      if (token.email && !token.plan) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: token.email as string },
-          select: { id: true, plan: true, referralCode: true, balance: true },
-        });
-        if (dbUser) {
-          token.id = dbUser.id;
-          token.plan = dbUser.plan;
-          token.referralCode = dbUser.referralCode;
-          token.balance = dbUser.balance;
-        }
+    async jwt({ token, user, account }) {
+      // Store user info from GitHub/Google in the JWT on first sign-in
+      if (user) {
+        token.id = account?.providerAccountId || user.email;
+        token.name = user.name;
+        token.email = user.email;
+        token.image = user.image;
+        token.plan = "free";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.plan = token.plan as string;
-        session.user.referralCode = token.referralCode as string;
-        session.user.balance = token.balance as number;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.image = token.image as string;
+        session.user.plan = (token.plan as string) || "free";
       }
       return session;
     },
