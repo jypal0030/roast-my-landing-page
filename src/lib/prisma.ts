@@ -3,9 +3,9 @@ let _prisma: any = null;
 function getPrisma(): any {
   if (_prisma) return _prisma;
   const { PrismaClient } = require("@prisma/client") as any;
-  _prisma = new PrismaClient({
-    accelerateUrl: process.env.DATABASE_URL,
-  });
+  const { PrismaPg } = require("@prisma/adapter-pg") as any;
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL || "" });
+  _prisma = new PrismaClient({ adapter });
   return _prisma;
 }
 
