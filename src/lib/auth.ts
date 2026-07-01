@@ -21,10 +21,13 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, account }) {
       if (user) {
-        token.id = account?.providerAccountId || user.email;
-        token.name = user.name;
-        token.email = user.email;
-        token.image = user.image;
+        const email = user.email || "";
+        const name = user.name || "";
+        const image = user.image || "";
+        token.id = account?.providerAccountId || email;
+        token.name = name;
+        token.email = email;
+        token.image = image;
         token.plan = "free";
         token.referralCode = generateReferralCode(user.name);
         token.balance = 0;
