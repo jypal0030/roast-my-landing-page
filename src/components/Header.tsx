@@ -61,7 +61,7 @@ export function Header() {
             </div>
           ) : (
             <button
-              onClick={() => signIn("google")}
+              onClick={() => signIn()}
               className="flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 transition-colors"
             >
               <User className="h-4 w-4" />
@@ -103,7 +103,7 @@ export function Header() {
               </>
             ) : (
               <button
-                onClick={() => signIn("google")}
+                onClick={() => signIn()}
                 className="w-full rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600"
               >
                 Sign In
