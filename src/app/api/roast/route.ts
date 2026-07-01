@@ -141,9 +141,10 @@ export async function POST(req: NextRequest) {
       lighthouse,
     });
   } catch (error) {
-    console.error("Roast API error:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Roast API error:", msg);
     return NextResponse.json(
-      { error: "Failed to roast this website. It might be blocking our bot. Try another URL!" },
+      { error: `Roast failed: ${msg}` },
       { status: 500 }
     );
   }
