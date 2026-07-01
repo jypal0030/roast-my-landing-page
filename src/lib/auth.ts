@@ -1,13 +1,15 @@
 import { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
+// GoogleProvider removed — credentials not configured
+
+function generateReferralCode(name?: string | null): string {
+  const prefix = name ? name.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 4) : "USER";
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${prefix}-${random}`;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
@@ -16,11 +18,11 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   callbacks: {
     async signIn({ user }) {
-      // Allow all sign-ins — JWT stores user info without DB
+      // At minimum, need an email
       return !!user.email;
     },
     async jwt({ token, user, account }) {
-      // Store user info from GitHub/Google in the JWT on first sign-in
+      // First sign-in: store GitHub profile in JWT
       if (user) {
         token.id = account?.providerAccountId || user.email;
         token.name = user.name;
@@ -28,15 +30,42 @@ export const authOptions: NextAuthOptions = {
         token.image = user.image;
         token.plan = "free";
       }
+
+      // If DB available, try to sync user (non-blocking)
+      try {
+        const { prisma } = require("@/lib/prisma");
+        if (token.email) {
+          let dbUser = await prisma.user.findUnique({ where: { email: token.email } });
+          if (!dbUser) {
+            const referralCode = generateReferralCode(token.name);
+            dbUser = await prisma.user.create({
+              data: {
+                email: token.email,
+                name: token.name,
+                image: token.image,
+                referralCode,
+              },
+            });
+          }
+          if (dbUser) {
+            token.id = dbUser.id;
+            token.plan = dbUser.plan;
+            token.referralCode = dbUser.referralCode;
+            token.balance = dbUser.balance;
+          }
+        }
+      } catch {
+        // DB not available — JWT still works with basic info
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
-        session.user.image = token.image as string;
         session.user.plan = (token.plan as string) || "free";
+        session.user.referralCode = token.referralCode as string;
+        session.user.balance = token.balance as number;
       }
       return session;
     },
