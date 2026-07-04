@@ -20,11 +20,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (session?.user?.id) {
+      // Fetch roasts
       fetch("/api/roasts?limit=50")
         .then((r) => r.json())
         .then((d) => setRoasts(d.roasts || []))
         .catch(() => {})
         .finally(() => setLoading(false));
+
+      // Claim pending referral (cookie set by middleware from ?ref=CODE)
+      const refCookie = document.cookie.match(/referral_code=([^;]+)/);
+      if (refCookie && refCookie[1]) {
+        fetch("/api/referral/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ referralCode: refCookie[1] }),
+        }).then(() => {
+          // Clear the cookie after claiming
+          document.cookie = "referral_code=; max-age=0; path=/";
+        }).catch(() => {});
+      }
     } else if (status !== "loading") {
       setLoading(false);
     }

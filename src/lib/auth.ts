@@ -44,20 +44,6 @@ export const authOptions: NextAuthOptions = {
               balance: 0,
             },
           });
-
-          // Process referral if referred
-          try {
-            const { processReferral } = require("@/lib/referral");
-            // Check for referral code from cookie (set by middleware)
-            // We use a global store since we can't access cookies directly in callback
-            const pendingReferral = (globalThis as any).__pendingReferral?.[user.email];
-            if (pendingReferral) {
-              await processReferral(dbUser.id, pendingReferral);
-              delete (globalThis as any).__pendingReferral[user.email];
-            }
-          } catch {
-            // Referral processing is non-blocking
-          }
         } else {
           // Update profile on re-login
           await prisma.user.update({
