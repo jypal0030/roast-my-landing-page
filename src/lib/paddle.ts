@@ -96,3 +96,17 @@ export const REFERRAL_COMMISSIONS: Record<string, { levels: number; rates: numbe
   pro: { levels: 3, rates: [0.25, 0.10, 0.05] },
   agency: { levels: 3, rates: [0.30, 0.10, 0.05] },
 };
+
+/** Get priceId from plan type name — returns null if not yet configured in Paddle */
+export function getPlanPriceId(planType: string): string | null {
+  const plan = PLANS[planType as keyof typeof PLANS];
+  if (!plan?.priceId) return null;
+  return plan.priceId;
+}
+
+/** Get priceId from product type name — returns null if not yet configured */
+export function getProductPriceId(productType: string): string | null {
+  const product = ONE_TIME_PRODUCTS[productType];
+  if (!product?.priceId) return null;
+  return product.priceId;
+}

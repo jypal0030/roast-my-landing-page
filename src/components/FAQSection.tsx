@@ -31,7 +31,7 @@ const faqs = [
   },
   {
     q: "What payment methods do you accept?",
-    a: "We use Stripe for all payments, which means you can pay with all major credit/debit cards (Visa, Mastercard, Amex), Apple Pay, Google Pay, and most local payment methods depending on your country.",
+    a: "We use Paddle for all payments, which means you can pay with all major credit/debit cards (Visa, Mastercard, Amex), Apple Pay, Google Pay, PayPal, and most local payment methods. Paddle handles global tax/VAT compliance automatically.",
   },
   {
     q: "Do I own the roast results?",

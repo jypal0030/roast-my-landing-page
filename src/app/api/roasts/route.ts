@@ -6,31 +6,48 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = Math.min(parseInt(searchParams.get("limit") || "12"), 50);
+    const skip = (page - 1) * limit;
+
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const { prisma } = await import("@/lib/prisma");
-    const roasts = await prisma.roast.findMany({
-      where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
-      take: 50,
-      select: {
-        id: true,
-        url: true,
-        domain: true,
-        overallScore: true,
-        vibe: true,
-        brutalityLevel: true,
-        aiModel: true,
-        createdAt: true,
-      },
-    });
 
-    return NextResponse.json(roasts);
+    // Build where clause
+    const where: any = {};
+
+    // If user is logged in, filter by their roasts
+    if (session?.user?.id) {
+      where.userId = session.user.id;
+    } else {
+      // For public gallery: only show public roasts
+      where.isPublic = true;
+    }
+
+    const [roasts, total] = await Promise.all([
+      prisma.roast.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          domain: true,
+          url: true,
+          overallScore: true,
+          vibe: true,
+          aiModel: true,
+          createdAt: true,
+        },
+      }),
+      prisma.roast.count({ where }),
+    ]);
+
+    return NextResponse.json({ roasts, total, page });
   } catch (error) {
-    // DB not available — return empty array so frontend doesn't crash
-    return NextResponse.json([]);
+    // Graceful fallback
+    return NextResponse.json({ roasts: [], total: 0, page: 1 });
   }
 }

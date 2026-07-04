@@ -45,7 +45,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold text-white mb-4">Trust</h4>
             <div className="flex flex-col gap-2 text-ash-400 text-sm">
               <span>🔒 SSL Secured</span>
-              <span>💳 Stripe Verified</span>
+              <span>💳 Paddle Secure</span>
               <span>🤖 AI-Powered</span>
               <span>⚡ Instant Results</span>
             </div>
