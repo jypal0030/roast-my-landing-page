@@ -118,7 +118,7 @@ export default function ReferralPage() {
           />
           <button
             onClick={copyLink}
-            className="flex items-center justify-center gap-2 rounded-xl bg-ember-500 px-5 py-3 text-sm font-bold text-white hover:bg-ember-600 transition-all"
+            className="flex items-center justify-center gap-2 rounded-xl bg-ember-500 px-5 py-3 text-sm font-bold text-white hover:bg-ember-600 active:scale-95 transition-all duration-300"
           >
             <Copy className="h-4 w-4" /> Copy Link
           </button>
@@ -144,7 +144,7 @@ export default function ReferralPage() {
         {commission.rates.map((rate, i) => (
           <div
             key={i}
-            className={`rounded-xl border p-5 ${
+            className={`rounded-xl border p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
               plan === "free" && i >= 1
                 ? "border-ash-700 bg-ash-800/30 opacity-60"
                 : "border-ember-500/30 bg-ember-500/5"
@@ -237,7 +237,7 @@ export default function ReferralPage() {
           </p>
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 rounded-xl bg-ember-500 px-6 py-3 text-sm font-bold text-white hover:bg-ember-600 transition-all"
+            className="inline-flex items-center gap-2 rounded-xl bg-ember-500 px-6 py-3 text-sm font-bold text-white hover:bg-ember-600 active:scale-95 transition-all duration-300"
           >
             View Plans
           </Link>
@@ -259,7 +259,7 @@ function StatBox({
   color?: string;
 }) {
   return (
-    <div className="rounded-xl border border-ash-700 bg-ash-800/50 p-5">
+    <div className="rounded-xl border border-ash-700 bg-ash-800/50 p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       <Icon className="h-5 w-5 text-ash-500 mb-2" />
       <div className="text-xs text-ash-500 mb-1">{label}</div>
       <div className={`text-xl font-bold ${color}`}>{value}</div>

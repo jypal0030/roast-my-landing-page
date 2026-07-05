@@ -25,13 +25,13 @@ export function Header() {
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             href="/pricing"
-            className="text-ash-300 hover:text-white transition-colors text-sm font-medium"
+            className="text-ash-300 hover:text-white active:scale-95 transition-all duration-300 text-sm font-medium"
           >
             Pricing
           </Link>
           <Link
             href="/#gallery"
-            className="text-ash-300 hover:text-white transition-colors text-sm font-medium"
+            className="text-ash-300 hover:text-white active:scale-95 transition-all duration-300 text-sm font-medium"
           >
             Wall of Shame
           </Link>
@@ -39,21 +39,21 @@ export function Header() {
             <div className="flex items-center gap-4">
               <Link
                 href="/referral"
-                className="flex items-center gap-1 text-ash-300 hover:text-ember-400 transition-colors text-sm font-medium"
+                className="flex items-center gap-1 text-ash-300 hover:text-ember-400 active:scale-95 transition-all duration-300 text-sm font-medium"
               >
                 <Gift className="h-4 w-4" />
                 Referrals
               </Link>
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1 text-ash-300 hover:text-white transition-colors text-sm font-medium"
+                className="flex items-center gap-1 text-ash-300 hover:text-white active:scale-95 transition-all duration-300 text-sm font-medium"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard
               </Link>
               <button
                 onClick={() => signOut()}
-                className="flex items-center gap-1 text-ash-300 hover:text-fire-400 transition-colors text-sm font-medium"
+                className="flex items-center gap-1 text-ash-300 hover:text-fire-400 active:scale-95 transition-all duration-300 text-sm font-medium"
               >
                 <LogOut className="h-4 w-4" />
                 Sign Out
@@ -62,7 +62,7 @@ export function Header() {
           ) : (
             <Link
               href="/auth/signin"
-              className="flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 transition-colors"
+              className="flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 active:scale-95 transition-all duration-300"
             >
               <User className="h-4 w-4" />
               Sign In
@@ -73,7 +73,7 @@ export function Header() {
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="text-ash-300 hover:text-white md:hidden"
+          className="text-ash-300 hover:text-white active:scale-95 transition-all duration-300 md:hidden"
         >
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>

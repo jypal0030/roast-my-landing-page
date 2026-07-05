@@ -75,7 +75,7 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
             <button
               type="submit"
               disabled={isLoading || !url.trim()}
-              className="flex items-center gap-2 bg-fire-500 px-6 py-4 text-sm font-bold text-white hover:bg-fire-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all m-1 rounded-xl"
+              className="flex items-center gap-2 bg-fire-500 px-6 py-4 text-sm font-bold text-white hover:bg-fire-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 m-1 rounded-xl"
             >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

@@ -73,7 +73,7 @@ export function PricingTable() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {tiers.map((tier) => (
             <motion.div key={tier.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className={cn("relative rounded-2xl border p-6 transition-all", tier.highlight ? "border-fire-500/50 bg-fire-500/5 ring-1 ring-fire-500/20" : "border-ash-700 bg-ash-800/50 hover:border-ash-600")}>
+              className={cn("relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-fire-500/10", tier.highlight ? "border-fire-500/50 bg-fire-500/5 ring-1 ring-fire-500/20" : "border-ash-700 bg-ash-800/50 hover:border-ash-600")}>
               {tier.highlight && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-fire-500 px-3 py-1 text-xs font-bold text-white">MOST POPULAR</div>}
               <tier.icon className="h-8 w-8 text-fire-400 mb-4" />
               <h3 className="text-lg font-bold text-white mb-1">{tier.name}</h3>
@@ -84,12 +84,12 @@ export function PricingTable() {
               </ul>
               {tier.planType ? (
                 <button onClick={() => handleCheckout(tier.planType!, true)} disabled={loading === tier.planType}
-                  className={cn("w-full rounded-lg px-4 py-2.5 text-sm font-bold transition-all", tier.highlight ? "bg-fire-500 text-white hover:bg-fire-600" : "bg-ash-700 text-white hover:bg-ash-600")}>
+                  className={cn("w-full rounded-lg px-4 py-2.5 text-sm font-bold transition-all duration-300 active:scale-95", tier.highlight ? "bg-fire-500 text-white hover:bg-fire-600" : "bg-ash-700 text-white hover:bg-ash-600")}>
                   {loading === tier.planType ? "Loading..." : tier.cta}
                 </button>
               ) : (
                 <button onClick={() => document.getElementById("url-input")?.scrollIntoView({ behavior: "smooth" })}
-                  className="w-full rounded-lg border border-ash-600 px-4 py-2.5 text-sm font-bold text-ash-300 hover:bg-ash-700 transition-all">{tier.cta}</button>
+                  className="w-full rounded-lg border border-ash-600 px-4 py-2.5 text-sm font-bold text-ash-300 hover:bg-ash-700 transition-all duration-300 active:scale-95">{tier.cta}</button>
               )}
             </motion.div>
           ))}
@@ -98,12 +98,12 @@ export function PricingTable() {
           <h3 className="text-center font-display text-2xl text-white mb-6">One-Time Purchases</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {oneTimeProducts.map((p) => (
-              <div key={p.type} className="rounded-xl border border-ash-700 bg-ash-800/50 p-5 flex flex-col">
+              <div key={p.type} className="rounded-xl border border-ash-700 bg-ash-800/50 p-5 flex flex-col transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-ember-500/10">
                 <h4 className="font-semibold text-white mb-1">{p.name}</h4>
                 <p className="text-2xl font-bold text-fire-400 mb-2">{p.price}</p>
                 <p className="text-sm text-ash-400 mb-4 flex-1">{p.desc}</p>
                 <button onClick={() => handleCheckout(p.type, false)} disabled={loading === p.type}
-                  className="w-full rounded-lg bg-ash-700 px-4 py-2 text-sm font-bold text-white hover:bg-ash-600 transition-all">
+                  className="w-full rounded-lg bg-ash-700 px-4 py-2 text-sm font-bold text-white hover:bg-ash-600 transition-all duration-300 active:scale-95">
                   {loading === p.type ? "Loading..." : `Buy ${p.name}`}
                 </button>
               </div>

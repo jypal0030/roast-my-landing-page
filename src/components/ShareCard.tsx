@@ -82,7 +82,7 @@ export function ShareCard({ domain, score, vibe, monthlyLoss, screenshotUrl, onC
         <div className="flex gap-3 mt-4">
           <button
             onClick={downloadCard}
-            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-ember-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-ember-600 transition-all"
+            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-ember-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-ember-600 active:scale-95 transition-all duration-300"
           >
             <Download className="h-4 w-4" /> Download PNG
           </button>

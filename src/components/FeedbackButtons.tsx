@@ -46,7 +46,7 @@ export function FeedbackButtons({ roastId, currentFeedback }: FeedbackButtonsPro
           key={opt.value}
           onClick={() => handleFeedback(opt.value)}
           disabled={submitting || !!selected}
-          className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
+          className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-300 ${
             selected === opt.value
               ? "bg-fire-500/20 border-fire-500 text-fire-400"
               : "border-ash-700 bg-ash-800 text-ash-400 hover:border-ash-600 hover:text-ash-200"

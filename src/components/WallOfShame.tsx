@@ -44,7 +44,13 @@ export function WallOfShame() {
   return (
     <section id="gallery" className="px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="text-center mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10"
+        >
           <h2 className="font-display text-4xl sm:text-5xl text-white mb-4">
             {tab === "worst" ? "🔥 Wall of Shame" : "🏆 Wall of Fame"}
           </h2>
@@ -53,16 +59,16 @@ export function WallOfShame() {
               ? "The worst landing pages we've roasted. Could yours be next?"
               : "The rare websites that survived our roast with dignity intact."}
           </p>
-        </div>
+        </motion.div>
 
         <div className="flex justify-center gap-2 mb-8">
           {["worst", "best"].map((t) => (
             <button key={t} onClick={() => setTab(t as "worst" | "best")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 active:scale-95 ${
                 tab === t
                   ? t === "worst" ? "bg-fire-500/20 text-fire-400 border border-fire-500/30"
                   : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                  : "bg-ash-800 text-ash-400 border border-ash-700 hover:border-ash-600"
+                  : "bg-ash-800 text-ash-400 border border-ash-700 hover:border-ash-600 hover:scale-105"
               }`}>
               {t === "worst" ? "🔥 Worst Roasts" : "🏆 Best Roasts"}
             </button>
@@ -90,7 +96,7 @@ export function WallOfShame() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {roasts.map((roast, i) => (
               <motion.div key={roast.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                <Link href={`/roast/${roast.id}`} className="group block rounded-xl border border-ash-700 bg-ash-800 p-5 hover:border-ash-500 transition-all hover:bg-ash-700/50">
+                <Link href={`/roast/${roast.id}`} className="group block rounded-xl border border-ash-700 bg-ash-800 p-5 hover:border-ash-500 hover:scale-[1.02] hover:shadow-xl hover:shadow-fire-500/10 transition-all duration-300 hover:bg-ash-700/50">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-ash-500" />

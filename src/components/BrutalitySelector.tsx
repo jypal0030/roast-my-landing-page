@@ -19,7 +19,7 @@ interface BrutalitySelectorProps {
 export function BrutalitySelector({ brutalityLevel, setBrutalityLevel, disabled }: BrutalitySelectorProps) {
   return (
     <div className="mt-4">
-      <p className="text-xs text-ash-500 mb-2 text-center">Brutality Level</p>
+      <p className="text-xs text-ash-500 mb-2 text-center transition-all duration-300">Brutality Level</p>
       <div className="flex justify-center gap-1.5 flex-wrap">
         {LEVELS.map(({ level, label, emoji, color }) => (
           <button
@@ -31,7 +31,7 @@ export function BrutalitySelector({ brutalityLevel, setBrutalityLevel, disabled 
               "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
               brutalityLevel === level
                 ? color
-                : "border-ash-600 text-ash-400 hover:border-ash-500 hover:text-ash-300"
+                : "border-ash-600 text-ash-400 hover:border-ash-500 hover:text-ash-300 hover:scale-110 active:scale-95"
             )}
           >
             {emoji} {label}

@@ -58,7 +58,7 @@ export function SocialProof() {
           <h3 className="text-center font-display text-3xl text-white mb-10">What Our Users Say</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
-              <div key={t.name} className="rounded-xl border border-ash-700 bg-ash-800 p-6">
+              <div key={t.name} className="rounded-xl border border-ash-700 bg-ash-800 p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
                 </div>
@@ -75,7 +75,7 @@ export function SocialProof() {
 
 function StatCard({ icon: Icon, value, label }: { icon: React.ElementType; value: string; label: string }) {
   return (
-    <div className="text-center p-6 rounded-xl border border-ash-700 bg-ash-800/50">
+    <div className="text-center p-6 rounded-xl border border-ash-700 bg-ash-800/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       <Icon className="h-6 w-6 text-fire-400 mx-auto mb-3" />
       <div className="text-2xl sm:text-3xl font-bold text-white mb-1">{value}</div>
       <div className="text-sm text-ash-400">{label}</div>

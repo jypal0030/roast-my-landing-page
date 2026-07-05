@@ -70,7 +70,7 @@ export function FAQSection() {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full text-left rounded-xl border border-ash-700 bg-ash-800/50 p-5 hover:border-ash-600 transition-all"
+                className="w-full text-left rounded-xl border border-ash-700 bg-ash-800/50 p-5 hover:border-ash-600 hover:shadow-md transition-all duration-300"
               >
                 <div className="flex items-center justify-between gap-4">
                   <span className="font-semibold text-white text-sm sm:text-base">
