@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 const FEEDBACK_OPTIONS = [
@@ -42,10 +43,14 @@ export function FeedbackButtons({ roastId, currentFeedback }: FeedbackButtonsPro
   return (
     <div className="flex justify-center gap-2 flex-wrap">
       {FEEDBACK_OPTIONS.map((opt) => (
-        <button
+        <motion.button
           key={opt.value}
           onClick={() => handleFeedback(opt.value)}
           disabled={submitting || !!selected}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          animate={selected === opt.value ? { scale: [1, 1.15, 1] } : {}}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
           className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-300 ${
             selected === opt.value
               ? "bg-fire-500/20 border-fire-500 text-fire-400"
@@ -53,7 +58,7 @@ export function FeedbackButtons({ roastId, currentFeedback }: FeedbackButtonsPro
           } disabled:cursor-not-allowed`}
         >
           {opt.emoji} {opt.label}
-        </button>
+        </motion.button>
       ))}
     </div>
   );

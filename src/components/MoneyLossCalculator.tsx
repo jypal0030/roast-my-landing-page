@@ -73,9 +73,11 @@ export function MoneyLossCalculator({ monthlyLoss, yearlyLoss, scores }: MoneyLo
             </span>
             <div className="flex items-center gap-3">
               <div className="h-1.5 w-20 bg-ash-700 rounded-full overflow-hidden">
-                <div
+                <motion.div
                   className="h-full bg-fire-500 rounded-full"
-                  style={{ width: `${Math.min((data.moneyImpact / (monthlyLoss || 1)) * 100, 100)}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((data.moneyImpact / (monthlyLoss || 1)) * 100, 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut", delay: 0.5 + i * 0.1 }}
                 />
               </div>
               <span className="text-sm font-bold text-fire-400">

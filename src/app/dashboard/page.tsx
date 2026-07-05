@@ -83,8 +83,9 @@ export default function DashboardPage() {
           ) : roasts.length === 0 ? (
             <div className="rounded-xl border border-ash-700 bg-ash-800/50 p-8 text-center">
               <Flame className="h-10 w-10 text-ash-600 mx-auto mb-3" />
-              <p className="text-ash-400 mb-4">No roasts yet. Time to roast something!</p>
-              <Link href="/" className="inline-flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-bold text-white hover:bg-fire-600"><Flame className="h-4 w-4" /> Roast Your First Site</Link>
+              <p className="text-ash-300 font-medium mb-2">Your roast history is emptier than a website without a CTA.</p>
+              <p className="text-ash-500 text-sm mb-4">Let&apos;s fix that.</p>
+              <Link href="/" className="inline-flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-bold text-white hover:bg-fire-600 active:scale-95 transition-all duration-300"><Flame className="h-4 w-4" /> Roast Your First Site</Link>
             </div>
           ) : (
             <div className="space-y-2">

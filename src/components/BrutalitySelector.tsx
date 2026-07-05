@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const LEVELS = [
@@ -22,20 +23,23 @@ export function BrutalitySelector({ brutalityLevel, setBrutalityLevel, disabled 
       <p className="text-xs text-ash-500 mb-2 text-center transition-all duration-300">Brutality Level</p>
       <div className="flex justify-center gap-1.5 flex-wrap">
         {LEVELS.map(({ level, label, emoji, color }) => (
-          <button
+          <motion.button
             key={level}
             type="button"
             onClick={() => setBrutalityLevel(level)}
             disabled={disabled}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
             className={cn(
-              "px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+              "px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-300",
               brutalityLevel === level
                 ? color
-                : "border-ash-600 text-ash-400 hover:border-ash-500 hover:text-ash-300 hover:scale-110 active:scale-95"
+                : "border-ash-600 text-ash-400 hover:border-ash-500 hover:text-ash-300"
             )}
           >
             {emoji} {label}
-          </button>
+          </motion.button>
         ))}
       </div>
     </div>

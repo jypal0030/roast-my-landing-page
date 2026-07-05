@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { Flame, Users, DollarSign, Star } from "lucide-react";
 
 interface Stats {
@@ -36,20 +37,23 @@ export function SocialProof() {
       .catch(() => {});
   }, []);
 
+  const roastCount = stats.roastCount || 0;
+  const userCount = stats.userCount || 0;
+
   const roastLabel = stats.roastCount === 0
     ? "Brand new — be first!"
-    : `${stats.roastCount.toLocaleString()}+`;
+    : "";
 
   const userLabel = stats.userCount === 0
     ? "Early adopters"
-    : `${stats.userCount.toLocaleString()}+`;
+    : "";
 
   return (
     <section className="border-t border-ash-800 px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <StatCard icon={Flame} value={roastLabel} label="Websites Roasted" />
-          <StatCard icon={Users} value={userLabel} label="Users" />
+          <StatCard icon={Flame} value={stats.roastCount === 0 ? roastLabel : <AnimatedCounter value={roastCount} suffix="+" />} label="Websites Roasted" />
+          <StatCard icon={Users} value={stats.userCount === 0 ? userLabel : <AnimatedCounter value={userCount} suffix="+" />} label="Users" />
           <StatCard icon={DollarSign} value="$0+" label="Revenue Loss Found" />
           <StatCard icon={Star} value="New" label="Average Rating" />
         </motion.div>
@@ -73,7 +77,9 @@ export function SocialProof() {
   );
 }
 
-function StatCard({ icon: Icon, value, label }: { icon: React.ElementType; value: string; label: string }) {
+interface StatCardProps { icon: React.ElementType; value: React.ReactNode; label: string }
+
+function StatCard({ icon: Icon, value, label }: StatCardProps) {
   return (
     <div className="text-center p-6 rounded-xl border border-ash-700 bg-ash-800/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
       <Icon className="h-6 w-6 text-fire-400 mx-auto mb-3" />

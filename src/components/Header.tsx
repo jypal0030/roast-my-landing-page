@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Flame, Menu, X, User, LogOut, LayoutDashboard, Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -80,38 +81,45 @@ export function Header() {
       </div>
 
       {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="border-t border-ash-700 bg-ash-800 px-4 py-4 md:hidden">
-          <nav className="flex flex-col gap-3">
-            <Link href="/pricing" className="text-ash-300 hover:text-white text-sm">
-              Pricing
-            </Link>
-            <Link href="/#gallery" className="text-ash-300 hover:text-white text-sm">
-              Wall of Shame
-            </Link>
-            {session?.user ? (
-              <>
-                <Link href="/dashboard" className="text-ash-300 hover:text-white text-sm">
-                  Dashboard
-                </Link>
-                <Link href="/referral" className="text-ash-300 hover:text-white text-sm">
-                  Referrals
-                </Link>
-                <button onClick={() => signOut()} className="text-fire-400 hover:text-fire-300 text-sm text-left">
-                  Sign Out
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/auth/signin"
-                className="w-full rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 text-center"
-              >
-                Sign In
-              </Link>
-            )}
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.nav
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="overflow-hidden md:hidden"
+          >
+            <div className="border-t border-ash-700 bg-ash-800 px-4 py-4">
+              <div className="flex flex-col gap-3">
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.05 }}>
+                  <Link href="/pricing" className="text-ash-300 hover:text-white text-sm">Pricing</Link>
+                </motion.div>
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+                  <Link href="/#gallery" className="text-ash-300 hover:text-white text-sm">Wall of Shame</Link>
+                </motion.div>
+                {session?.user ? (
+                  <>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
+                      <Link href="/dashboard" className="text-ash-300 hover:text-white text-sm">Dashboard</Link>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                      <Link href="/referral" className="text-ash-300 hover:text-white text-sm">Referrals</Link>
+                    </motion.div>
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
+                      <button onClick={() => signOut()} className="text-fire-400 hover:text-fire-300 text-sm text-left">Sign Out</button>
+                    </motion.div>
+                  </>
+                ) : (
+                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
+                    <Link href="/auth/signin" className="w-full rounded-lg bg-fire-500 px-4 py-2 text-sm font-semibold text-white hover:bg-fire-600 text-center inline-block">Sign In</Link>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
