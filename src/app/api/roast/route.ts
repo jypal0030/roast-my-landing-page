@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateRoast } from "@/lib/openai";
 import { generateFallbackRoast } from "@/lib/fallback";
-import { extractHtmlContent, getBasicLighthouseData } from "@/lib/screenshot";
+import { getBasicLighthouseData } from "@/lib/screenshot";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { scrapeWithJina, extractHtmlContent } from "@/lib/scraper";
+import { generateGroqRoast } from "@/lib/groq";
+import { buildRoastPrompt } from "@/lib/roast-prompt";
+import { getPageSpeedData } from "@/lib/pagespeed";
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,21 +37,42 @@ export async function POST(req: NextRequest) {
 
     const domain = new URL(normalizedUrl).hostname;
 
-    // Step 1: Extract HTML + Lighthouse data
-    const [htmlContent, lighthouse] = await Promise.all([
-      extractHtmlContent(normalizedUrl),
+    // Step 1: Scrape content (Jina AI → HTML fallback) + Lighthouse + PageSpeed
+    const [scrapedContent, lighthouse, pagespeedData] = await Promise.all([
+      (async () => {
+        const jinaContent = await scrapeWithJina(normalizedUrl);
+        return jinaContent || extractHtmlContent(normalizedUrl);
+      })(),
       getBasicLighthouseData(normalizedUrl),
+      getPageSpeedData(normalizedUrl),
     ]);
 
-    // Step 2: AI roast (with fallback)
+    // Step 2: Generate roast with enhanced prompt
+    const systemPrompt = buildRoastPrompt(brutalityLevel);
     let roastResult;
     let aiModel = "gpt-4o-mini";
+
     try {
-      roastResult = await generateRoast(htmlContent, lighthouse, brutalityLevel);
-    } catch (aiError) {
-      console.error("OpenAI failed, using fallback:", String(aiError).slice(0, 100));
-      roastResult = generateFallbackRoast(htmlContent, lighthouse, brutalityLevel);
-      aiModel = "fallback-demo";
+      // Try Groq first (faster, less censored, free)
+      if (process.env.GROQ_API_KEY) {
+        const groqResponse = await generateGroqRoast(systemPrompt, scrapedContent, lighthouse, pagespeedData);
+        const cleaned = groqResponse.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+        roastResult = JSON.parse(cleaned);
+        aiModel = "llama-3.3-70b (Groq)";
+      } else {
+        throw new Error("No Groq key");
+      }
+    } catch (groqError) {
+      console.log("Groq failed, falling back to OpenAI:", String(groqError).slice(0, 80));
+      // Fallback to GPT-4o-mini
+      try {
+        roastResult = await generateRoast(scrapedContent, lighthouse, brutalityLevel);
+        aiModel = "gpt-4o-mini";
+      } catch (openaiError) {
+        console.error("OpenAI also failed:", String(openaiError).slice(0, 80));
+        roastResult = generateFallbackRoast(scrapedContent, lighthouse, brutalityLevel);
+        aiModel = "fallback-demo";
+      }
     }
 
     // Step 3: Always save to DB
@@ -75,7 +100,7 @@ export async function POST(req: NextRequest) {
             aboveTheFold: roastResult.aboveTheFold,
           }),
           roastJson: JSON.stringify(roastResult),
-          htmlContent: htmlContent.substring(0, 50000),
+          htmlContent: scrapedContent.substring(0, 50000),
           lighthouseJson: JSON.stringify(lighthouse),
           aiModel,
           isPublic: true,
@@ -83,7 +108,7 @@ export async function POST(req: NextRequest) {
       });
       roastId = saved.id;
     } catch (dbError) {
-      console.error("DB save failed (continuing with temp ID):", String(dbError).slice(0, 100));
+      console.error("DB save failed:", String(dbError).slice(0, 100));
     }
 
     return NextResponse.json({
@@ -103,6 +128,7 @@ export async function POST(req: NextRequest) {
       },
       roastData: roastResult,
       lighthouse,
+      pagespeed: pagespeedData,
       vibe: roastResult.vibe,
       totalMonthlyLoss: roastResult.totalMonthlyLoss,
       yearlyLoss: roastResult.yearlyLoss,

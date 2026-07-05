@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
 import {
   Share2,
   Copy,
@@ -70,6 +71,21 @@ const CATEGORY_LABELS: Record<string, string> = {
 export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastResultViewProps) {
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [showShareCard, setShowShareCard] = useState(false);
+  const [showViralShare, setShowViralShare] = useState(false);
+
+  // Confetti on terrible scores
+  useEffect(() => {
+    if (roast.overallScore <= 3) {
+      const duration = 2000;
+      const end = Date.now() + duration;
+      const frame = () => {
+        confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ["#e94560", "#ff6b6b", "#ffd93d"] });
+        confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ["#e94560", "#ff6b6b", "#ffd93d"] });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      };
+      frame();
+    }
+  }, [roast.overallScore]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -318,6 +334,13 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <FeedbackButtons roastId={roast.id} currentFeedback={roast.feedback} />
       </motion.div>
 
+      {/* Share & Go Viral button */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.15 }} className="text-center mb-10">
+        <button onClick={() => setShowViralShare(true)} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-fire-500 to-ember-500 px-6 py-3 text-sm font-bold text-white hover:from-fire-600 hover:to-ember-600 transition-all shadow-lg shadow-fire-500/20">
+          <Share2 className="h-4 w-4" /> Share &amp; Go Viral 🚀
+        </button>
+      </motion.div>
+
       {/* Roast another */}
       <div className="text-center pb-10">
         <a
@@ -328,6 +351,22 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
           Roast Another Website
         </a>
       </div>
+
+      {/* Viral share modal */}
+      {showViralShare && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowViralShare(false)}>
+          <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="bg-ash-800 border border-ash-600 rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-display text-xl text-white mb-4 text-center">🔥 Share This Roast</h3>
+            <div className="space-y-2">
+              <button onClick={() => { const t=`My website got a ${roast.overallScore}/10 roast score 😂 Check yours at roastmylp.com`; window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(t)}`,"_blank"); }} className="w-full rounded-lg bg-[#1DA1F2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1a8cd8]">🐦 Share on Twitter/X</button>
+              <button onClick={() => { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`,"_blank"); }} className="w-full rounded-lg bg-[#0A66C2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0959a8]">💼 Share on LinkedIn</button>
+              <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copied!"); setShowViralShare(false); }} className="w-full rounded-lg bg-ash-700 px-4 py-2.5 text-sm font-bold text-ash-200 hover:bg-ash-600">📋 Copy Link</button>
+              <button onClick={() => { window.location.href = `mailto:?subject=Your website got roasted 😂&body=Check out this savage roast of ${roast.domain}: ${window.location.href}`; }} className="w-full rounded-lg bg-ember-500/10 border border-ember-500/30 px-4 py-2.5 text-sm font-bold text-ember-400 hover:bg-ember-500/20">✉️ Email to site owner</button>
+            </div>
+            <button onClick={() => setShowViralShare(false)} className="w-full mt-3 text-sm text-ash-500 hover:text-ash-300">Close</button>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Share card modal */}
       {showShareCard && (
