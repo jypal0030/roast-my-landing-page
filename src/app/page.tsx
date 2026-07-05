@@ -4,6 +4,7 @@ import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { UrlInput } from "@/components/UrlInput";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
+import { RoastPreview } from "@/components/RoastPreview";
 import { WallOfShame } from "@/components/WallOfShame";
 import { PricingTable } from "@/components/PricingTable";
 import { FAQSection } from "@/components/FAQSection";
@@ -17,6 +18,7 @@ export default function HomePage() {
       <AnimatedBackground />
       <HeroSection />
       <UrlInput isLoading={isLoading} setIsLoading={setIsLoading} />
+      <RoastPreview />
       <WallOfShame />
       <SocialProof />
       <PricingTable />

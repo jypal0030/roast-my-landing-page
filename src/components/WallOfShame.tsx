@@ -42,7 +42,7 @@ export function WallOfShame() {
   };
 
   return (
-    <section id="gallery" className="px-4 py-16 sm:py-24">
+    <section id="gallery" className="border-t border-ash-800 bg-ash-800 px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

@@ -70,9 +70,9 @@ export function PricingTable() {
           <h2 className="font-display text-4xl sm:text-5xl text-white mb-4">Simple, Transparent Pricing</h2>
           <p className="text-ash-400 max-w-xl mx-auto">Start free, upgrade when you need more. One-time purchases available. Secured by Paddle (Merchant of Record).</p>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <motion.div variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {tiers.map((tier) => (
-            <motion.div key={tier.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            <motion.div key={tier.name} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
               className={cn("relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-fire-500/10", tier.highlight ? "border-fire-500/50 bg-fire-500/5 ring-1 ring-fire-500/20" : "border-ash-700 bg-ash-800/50 hover:border-ash-600")}>
               {tier.highlight && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-fire-500 px-3 py-1 text-xs font-bold text-white">MOST POPULAR</div>}
               <tier.icon className="h-8 w-8 text-fire-400 mb-4" />
@@ -93,7 +93,7 @@ export function PricingTable() {
               )}
             </motion.div>
           ))}
-        </div>
+        </motion.div>
         <div>
           <h3 className="text-center font-display text-2xl text-white mb-6">One-Time Purchases</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
