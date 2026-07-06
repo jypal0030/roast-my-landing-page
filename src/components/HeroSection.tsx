@@ -26,13 +26,13 @@ export function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-fire-500/30 bg-fire-500/10 px-4 py-1.5"
+          className="mb-6 inline-flex items-center gap-2 badge-premium"
         >
           <Zap className="h-4 w-4 text-fire-400" />
-          <span className="text-sm font-medium text-fire-300">AI-Powered Website Analysis</span>
+          <span>AI-Powered Website Analysis</span>
         </motion.div>
 
-        {/* Heading */}
+        {/* Heading with gradient */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export function HeroSection() {
         >
           Your Website Is
           <br />
-          <span className="text-fire-500">Bleeding Money</span>
+          <span className="gradient-text-fire">Bleeding Money</span>
         </motion.h1>
 
         <motion.p

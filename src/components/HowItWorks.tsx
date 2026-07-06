@@ -50,7 +50,7 @@ export function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="relative rounded-2xl border border-ash-700 bg-ash-800/50 p-6 text-center transition-all duration-300 hover:border-fire-500/30 hover:bg-ash-800 hover:scale-[1.02]"
+              className="relative glass-card rounded-2xl p-6 text-center transition-all duration-300 hover:scale-[1.02]"
             >
               {/* Step number badge */}
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-fire-500 text-white font-bold text-sm">
