@@ -45,6 +45,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script src="https://cdn.paddle.com/paddle/v2/paddle.js" async />
+      </head>
       <body className={`${inter.variable} ${bebasNeue.variable} antialiased`}>
         <Providers>
           <div className="flex min-h-screen flex-col">
