@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { getPlanPriceId, getCheckoutUrl, ONE_TIME_PRODUCTS } from "@/lib/paddle";
+import { getPlanPriceId, ONE_TIME_PRODUCTS, PLANS, paddle } from "@/lib/paddle";
 
 export const dynamic = "force-dynamic";
 
@@ -38,13 +38,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const checkoutUrl = getCheckoutUrl(priceId, session.user.email);
+    // Create transaction via Paddle Billing SDK
+    // NOTE: customerId expects a Paddle customer ID (ctm_...), not email.
+    // Paddle's checkout page will collect customer details.
+    const client = paddle();
+    const transaction = await client.transactions.create({
+      items: [{ priceId, quantity: 1 }],
+      customData: { user_email: session.user.email },
+    });
+
+    if (!transaction?.id || !transaction?.checkout?.url) {
+      console.error("[Checkout] No checkout URL in transaction response");
+      return NextResponse.json({ error: "Payment setup failed. Please try again." }, { status: 500 });
+    }
+
+    const checkoutUrl = transaction.checkout.url;
     const env = process.env.NEXT_PUBLIC_PADDLE_ENV || "sandbox";
 
-    console.log(`[Checkout] user=${session.user.email} type=${checkoutType} priceId=${priceId} env=${env}`);
+    console.log(`[Checkout] user=${session.user.email} type=${checkoutType} priceId=${priceId} txn=${transaction.id} env=${env}`);
 
     return NextResponse.json({
       url: checkoutUrl,
+      transactionId: transaction.id,
       priceId,
       env,
     });
