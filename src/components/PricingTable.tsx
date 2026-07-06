@@ -51,29 +51,56 @@ export function PricingTable() {
     setLoading(type);
     try {
       const body = isPlan ? { planType: type } : { productType: type };
-      const res = await fetch("/api/paddle/checkout", {
+      const res = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!data.priceId) { toast.error(data.error || "Something went wrong"); return; }
+      if (!data.orderId) { toast.error(data.error || "Something went wrong"); return; }
 
-      const Paddle = (window as any).Paddle;
-      if (!Paddle) { toast.error("Loading checkout… try again in a moment"); return; }
-
-      // Initialize once, then open overlay
-      if (!(window as any).__paddleInitialized) {
-        Paddle.Environment.set(data.env || "production");
-        Paddle.Initialize({ token: data.clientToken });
-        (window as any).__paddleInitialized = true;
+      // Load Razorpay via cdn
+      const RazorpayCheckout = (window as any).Razorpay;
+      if (!RazorpayCheckout) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("Razorpay load failed"));
+          document.head.appendChild(script);
+        });
       }
 
-      Paddle.Checkout.open({
-        items: [{ priceId: data.priceId, quantity: 1 }],
-        customer: { email: session.user?.email || "" },
-        settings: { displayMode: "overlay" },
-      });
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Roast My Landing Page",
+        description: data.planName,
+        order_id: data.orderId,
+        prefill: { email: session.user?.email },
+        theme: { color: "#EF4444" },
+        handler: async (response: any) => {
+          toast.success("Payment successful! 🎉");
+          // Verify payment
+          await fetch("/api/razorpay/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              planType: type,
+            }),
+          });
+        },
+        modal: {
+          ondismiss: () => { toast("Payment cancelled"); },
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
     } catch { toast.error("Payment setup failed"); }
     finally { setLoading(null); }
   };
