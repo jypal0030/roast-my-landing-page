@@ -130,9 +130,9 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
   const totalCategories = Object.keys(scores).length;
 
   const vibeColor =
-    roast.overallScore >= 8 ? "text-gradient-ember" :
-    roast.overallScore >= 6 ? "text-gradient-gold" :
-    "text-gradient";
+    roast.overallScore >= 8 ? "gradient-text-ember" :
+    roast.overallScore >= 6 ? "gradient-text-gold" :
+    "gradient-text-fire";
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:py-16">
@@ -142,7 +142,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-ash-400 mb-8"
+          className="inline-flex items-center gap-2 rounded-full glass-panel px-4 py-1.5 text-xs font-medium text-ash-400 mb-8"
         >
           <ExternalLink className="h-3 w-3" />
           <span className="text-ash-200">{roast.domain}</span>
@@ -217,7 +217,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
               >
                 <button
                   onClick={() => setExpandedCategory(isExpanded ? null : key)}
-                  className="w-full text-left card-premium rounded-2xl hover:border-fire-500/20 transition-all duration-300 group"
+                  className="w-full text-left glass-card rounded-2xl hover:border-fire-500/20 transition-all duration-300 group"
                 >
                   <div className="p-5">
                     <div className="flex items-center justify-between">
@@ -347,7 +347,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
 
           <h3 className="font-display text-3xl sm:text-4xl text-white mb-3">
             Fix Everything for{" "}
-            <span className="text-gradient">Just $49</span>
+            <span className="gradient-text-fire">Just $49</span>
           </h3>
           <p className="text-ash-300 text-sm sm:text-base max-w-lg mx-auto mb-6 leading-relaxed">
             Every week you wait is costing you{" "}
@@ -512,3 +512,4 @@ function LinkedinIcon() {
     </svg>
   );
 }
+
