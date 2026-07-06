@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { getPlanPriceId, ONE_TIME_PRODUCTS, PLANS, paddle } from "@/lib/paddle";
+import { getPlanPriceId, ONE_TIME_PRODUCTS, PADDLE_CLIENT_TOKEN } from "@/lib/paddle";
 
 export const dynamic = "force-dynamic";
 
@@ -16,19 +16,14 @@ export async function POST(req: NextRequest) {
     const { planType, productType, priceId: directPriceId } = body;
 
     let priceId: string | null = null;
-    let checkoutType = "";
 
-    // Resolve price ID from plan/product type or use direct price ID
     if (directPriceId) {
       priceId = directPriceId;
-      checkoutType = "direct";
     } else if (planType) {
       priceId = getPlanPriceId(planType);
-      checkoutType = `plan:${planType}`;
     } else if (productType) {
       const product = ONE_TIME_PRODUCTS[productType];
       priceId = product?.priceId || null;
-      checkoutType = `product:${productType}`;
     }
 
     if (!priceId) {
@@ -38,34 +33,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create transaction via Paddle Billing SDK
-    // NOTE: customerId expects a Paddle customer ID (ctm_...), not email.
-    // Paddle's checkout page will collect customer details.
-    const client = paddle();
-    const transaction = await client.transactions.create({
-      items: [{ priceId, quantity: 1 }],
-      customData: { user_email: session.user.email },
-    });
-
-    if (!transaction?.id || !transaction?.checkout?.url) {
-      console.error("[Checkout] No checkout URL in transaction response");
-      return NextResponse.json({ error: "Payment setup failed. Please try again." }, { status: 500 });
-    }
-
-    const checkoutUrl = transaction.checkout.url;
-    const env = process.env.NEXT_PUBLIC_PADDLE_ENV || "sandbox";
-
-    console.log(`[Checkout] user=${session.user.email} type=${checkoutType} priceId=${priceId} txn=${transaction.id} env=${env}`);
-
+    // Return priceId + client token for Paddle.js checkout (no Default Payment Link needed)
     return NextResponse.json({
-      url: checkoutUrl,
-      transactionId: transaction.id,
       priceId,
-      env,
+      clientToken: PADDLE_CLIENT_TOKEN,
+      env: process.env.NEXT_PUBLIC_PADDLE_ENV || "sandbox",
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("[Checkout] Error:", msg);
-    return NextResponse.json({ error: `Checkout failed — Paddle dashboard setup needed: ${msg}` }, { status: 500 });
+    return NextResponse.json({ error: `Checkout failed: ${msg}` }, { status: 500 });
   }
 }

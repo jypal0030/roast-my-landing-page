@@ -57,8 +57,29 @@ export function PricingTable() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (data.url) { window.location.href = data.url; }
-      else { toast.error(data.error || "Something went wrong"); }
+      if (!data.priceId) { toast.error(data.error || "Something went wrong"); return; }
+
+      // Load Paddle.js if not already loaded
+      if (!(window as any).Paddle) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("Paddle.js load failed"));
+          document.head.appendChild(script);
+        });
+        (window as any).Paddle.Environment.set(data.env || "sandbox");
+        (window as any).Paddle.Initialize({
+          token: data.clientToken,
+          checkout: { settings: { displayMode: "overlay" } },
+        });
+      }
+
+      // Open Paddle overlay checkout — no Default Payment Link needed!
+      (window as any).Paddle.Checkout.open({
+        items: [{ priceId: data.priceId, quantity: 1 }],
+        customer: { email: session.user.email },
+      });
     } catch { toast.error("Payment setup failed"); }
     finally { setLoading(null); }
   };
