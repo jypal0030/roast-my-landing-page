@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { DollarSign, TrendingDown, AlertTriangle } from "lucide-react";
+import { CountUp } from "@/components/CountUp";
 import { formatCurrency } from "@/lib/utils";
 
 interface MoneyLossCalculatorProps {
@@ -66,7 +67,7 @@ export function MoneyLossCalculator({ monthlyLoss, yearlyLoss, scores }: MoneyLo
                 Monthly Revenue Loss
               </div>
               <div className="text-3xl sm:text-4xl font-display font-bold text-fire-400 tracking-tight">
-                {formatCurrency(monthlyLoss)}
+                <CountUp value={monthlyLoss} duration={2.5} />
               </div>
             </div>
           </motion.div>
@@ -84,7 +85,7 @@ export function MoneyLossCalculator({ monthlyLoss, yearlyLoss, scores }: MoneyLo
                 Yearly Revenue Loss
               </div>
               <div className="text-3xl sm:text-4xl font-display font-bold text-amber-400 tracking-tight">
-                {formatCurrency(yearlyLoss)}
+                <CountUp value={yearlyLoss} duration={3} />
               </div>
             </div>
           </motion.div>

@@ -22,6 +22,8 @@ import { ScoreGauge } from "./ScoreGauge";
 import { MoneyLossCalculator } from "./MoneyLossCalculator";
 import { FeedbackButtons } from "./FeedbackButtons";
 import { ShareCard } from "./ShareCard";
+import { FireParticles } from "@/components/FireParticles";
+import { TiltCard } from "@/components/TiltCard";
 import { Analytics } from "@/lib/analytics";
 import { formatCurrency, getScoreBgColor, getBrutalityLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
@@ -135,7 +137,8 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
     "gradient-text-fire";
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:py-16">
+    <div className="mx-auto max-w-4xl px-4 py-8 sm:py-16 relative">
+      <FireParticles />
       {/* ── HEADER: Score + Vibe ── */}
       <div className="text-center mb-12">
         {/* Domain badge */}
@@ -215,6 +218,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.06 }}
               >
+                <TiltCard>
                 <button
                   onClick={() => setExpandedCategory(isExpanded ? null : key)}
                   className="w-full text-left glass-card rounded-2xl hover:border-fire-500/20 transition-all duration-300 group"
@@ -290,6 +294,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
                     </motion.div>
                   )}
                 </button>
+                </TiltCard>
               </motion.div>
             );
           })}
