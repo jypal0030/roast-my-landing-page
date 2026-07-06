@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { UrlInput } from "@/components/UrlInput";
+import { HowItWorks } from "@/components/HowItWorks";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { RoastPreview } from "@/components/RoastPreview";
 import { WallOfShame } from "@/components/WallOfShame";
@@ -18,6 +19,7 @@ export default function HomePage() {
       <AnimatedBackground />
       <HeroSection />
       <UrlInput isLoading={isLoading} setIsLoading={setIsLoading} />
+      <HowItWorks />
       <RoastPreview />
       <WallOfShame />
       <SocialProof />
