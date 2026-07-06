@@ -66,6 +66,6 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("[Checkout] Error:", msg);
-    return NextResponse.json({ error: `Checkout failed: ${msg}` }, { status: 500 });
+    return NextResponse.json({ error: `Checkout failed — Paddle dashboard setup needed: ${msg}` }, { status: 500 });
   }
 }
