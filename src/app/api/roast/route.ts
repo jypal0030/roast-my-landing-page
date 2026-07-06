@@ -58,6 +58,11 @@ export async function POST(req: NextRequest) {
         const groqResponse = await generateGroqRoast(systemPrompt, scrapedContent, lighthouse, pagespeedData);
         const cleaned = groqResponse.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
         roastResult = JSON.parse(cleaned);
+        // Normalize: Groq prompt wraps categories under "scores", flatten to top-level
+        if (roastResult.scores && !roastResult.firstImpression) {
+          roastResult = { ...roastResult.scores, ...roastResult };
+          delete roastResult.scores;
+        }
         aiModel = "llama-3.3-70b (Groq)";
       } else {
         throw new Error("No Groq key");
@@ -108,7 +113,7 @@ export async function POST(req: NextRequest) {
       });
       roastId = saved.id;
     } catch (dbError) {
-      console.error("DB save failed:", String(dbError).slice(0, 100));
+      console.error("DB save failed:", String(dbError).slice(0, 300));
     }
 
     return NextResponse.json({
