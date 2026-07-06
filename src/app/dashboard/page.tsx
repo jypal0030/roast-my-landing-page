@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import {
   Flame, Gift, Crown, DollarSign, Users, ExternalLink, Clock,
@@ -19,6 +20,15 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Payment status from Paddle redirect
+    const params = new URLSearchParams(window.location.search);
+    const paymentStatus = params.get("payment");
+    if (paymentStatus === "success") {
+      toast.success("Payment successful! Your plan has been upgraded. 🎉", { duration: 6000 });
+    } else if (paymentStatus === "cancelled") {
+      toast("Payment cancelled. No charges were made.", { icon: "ℹ️", duration: 5000 });
+    }
+
     if (session?.user?.id) {
       // Fetch roasts
       fetch("/api/roasts?limit=50")

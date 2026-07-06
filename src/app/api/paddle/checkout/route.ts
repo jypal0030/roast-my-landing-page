@@ -1,23 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { PLANS, ONE_TIME_PRODUCTS } from "@/lib/paddle";
+import { getPlanPriceId, getCheckoutUrl, ONE_TIME_PRODUCTS } from "@/lib/paddle";
 
 export const dynamic = "force-dynamic";
-
-// Map plan/product type names to their price IDs
-const PLAN_PRICE_MAP: Record<string, string | undefined | null> = {
-  starter: PLANS.starter.priceId,
-  pro: PLANS.pro.priceId,
-  agency: PLANS.agency.priceId,
-};
-
-const PRODUCT_PRICE_MAP: Record<string, string | undefined | null> = {
-  full_audit: ONE_TIME_PRODUCTS.full_audit.priceId,
-  roast_pack_5: ONE_TIME_PRODUCTS.roast_pack_5.priceId,
-  roast_pack_10: ONE_TIME_PRODUCTS.roast_pack_10.priceId,
-  competitor_battle: ONE_TIME_PRODUCTS.competitor_battle.priceId,
-};
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,38 +13,44 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    let priceId: string | undefined;
+    const { planType, productType, priceId: directPriceId } = body;
 
-    // Accept both {priceId} and {planType}/{productType}
-    if (body.priceId) {
-      priceId = body.priceId;
-    } else if (body.planType) {
-      priceId = PLAN_PRICE_MAP[body.planType] || undefined;
-    } else if (body.productType) {
-      priceId = PRODUCT_PRICE_MAP[body.productType] || undefined;
+    let priceId: string | null = null;
+    let checkoutType = "";
+
+    // Resolve price ID from plan/product type or use direct price ID
+    if (directPriceId) {
+      priceId = directPriceId;
+      checkoutType = "direct";
+    } else if (planType) {
+      priceId = getPlanPriceId(planType);
+      checkoutType = `plan:${planType}`;
+    } else if (productType) {
+      const product = ONE_TIME_PRODUCTS[productType];
+      priceId = product?.priceId || null;
+      checkoutType = `product:${productType}`;
     }
 
     if (!priceId) {
-      const requestedType = body.planType || body.productType || "unknown";
       return NextResponse.json(
-        { error: "Plan/product not configured yet. Please try again later." },
+        { error: "This product isn't available yet. Check back soon!" },
         { status: 400 }
       );
     }
 
-    const paddleEnv = process.env.NEXT_PUBLIC_PADDLE_ENV || "sandbox";
-    const checkoutBase = paddleEnv === "sandbox"
-      ? "https://sandbox-checkout.paddle.com/checkout"
-      : "https://checkout.paddle.com/checkout";
+    const checkoutUrl = getCheckoutUrl(priceId, session.user.email);
+    const env = process.env.NEXT_PUBLIC_PADDLE_ENV || "sandbox";
 
-    console.log(`Checkout: user=${session.user.email}, priceId=${priceId}, type=${body.planType || body.productType || "direct"}, env=${paddleEnv}`);
+    console.log(`[Checkout] user=${session.user.email} type=${checkoutType} priceId=${priceId} env=${env}`);
 
     return NextResponse.json({
-      url: `${checkoutBase}?priceId=${priceId}`,
+      url: checkoutUrl,
       priceId,
+      env,
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
+    console.error("[Checkout] Error:", msg);
     return NextResponse.json({ error: `Checkout failed: ${msg}` }, { status: 500 });
   }
 }
