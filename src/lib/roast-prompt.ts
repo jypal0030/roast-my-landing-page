@@ -60,10 +60,7 @@ Style: ${config.style}
     "copywriting": { same structure, reference actual copy from the page },
     "visualDesign": { same structure, reference actual colors, fonts, spacing },
     "ctaClarity": { same structure, reference actual button text and placement },
-    "mobileFriendliness": { same structure },
-    "loadingSpeed": { same structure, use actual PageSpeed data },
-    "trustSignals": { same structure, reference actual trust elements or lack thereof },
-    "aboveTheFold": { same structure, describe what's actually above the fold }
+    "trustSignals": { same structure, reference actual trust elements or lack thereof }
   },
   "top3Fixes": ["specific fix 1 with exact wording suggestion", "specific fix 2", "specific fix 3"],
   "totalMonthlyLoss": number,
@@ -79,11 +76,11 @@ Style: ${config.style}
 ## MONEY LOSS FORMULA:
 - Bad first impression = 20-40% bounce rate
 - Bad CTA = 15-25% lost conversions
-- Slow loading = 7% loss per extra second (use actual PageSpeed data)
-- No mobile optimization = 60% mobile bounce
 - No trust signals = 30% hesitation rate
 - Bad copy = 10-20% lost interest
+- Poor visual design = 15-30% credibility loss
 - Assume 500-5000 daily visitors based on site quality indicators
+- Each category's moneyImpact should estimate monthly revenue loss from that specific problem
 
 ## PERFORMANCE DATA INTEGRATION:
 - If PageSpeed < 50: reference the exact score in the roast

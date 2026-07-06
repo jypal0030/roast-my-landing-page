@@ -63,9 +63,10 @@ const CATEGORY_LABELS: Record<string, string> = {
   copywriting: "Copywriting",
   visualDesign: "Visual Design",
   ctaClarity: "CTA Clarity",
-  mobileFriendliness: "Mobile Friendliness",
-  loadingSpeed: "Loading Speed",
   trustSignals: "Trust Signals",
+  // Legacy categories — new roasts use only the 5 above for higher completion rates
+  mobileFriendliness: "Mobile",
+  loadingSpeed: "Speed",
   aboveTheFold: "Above the Fold",
 };
 
