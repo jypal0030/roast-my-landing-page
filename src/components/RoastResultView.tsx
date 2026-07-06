@@ -22,6 +22,7 @@ import { ScoreGauge } from "./ScoreGauge";
 import { MoneyLossCalculator } from "./MoneyLossCalculator";
 import { FeedbackButtons } from "./FeedbackButtons";
 import { ShareCard } from "./ShareCard";
+import { Analytics } from "@/lib/analytics";
 import { formatCurrency, getScoreColor, getScoreBgColor, getScoreEmoji, getBrutalityLabel } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -73,7 +74,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
   const [showShareCard, setShowShareCard] = useState(false);
   const [showViralShare, setShowViralShare] = useState(false);
 
-  // Confetti on terrible scores
+  // Confetti on terrible scores (they're the viral ones)
   useEffect(() => {
     if (roast.overallScore <= 3) {
       const duration = 2000;
@@ -85,7 +86,8 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
       };
       frame();
     }
-  }, [roast.overallScore]);
+    Analytics.roastCompleted(roast.id, roast.overallScore);
+  }, [roast.overallScore, roast.id]);
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -93,15 +95,34 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
   };
 
   const shareTwitter = () => {
-    const text = `My website got a ${roast.overallScore}/10 roast score with vibe: "${roast.vibe}" 💀\n\nRoast yours: ${window.location.origin}`;
+    const score = roast.overallScore;
+    const vibe = roast.vibe || "confused";
+    const loss = roast.totalMonthlyLoss || 0;
+    let text;
+    if (score <= 3) {
+      text = `💀 RoastMyLP just demolished my website. ${score}/10. Vibe: "${vibe}". I\'m losing $${loss.toLocaleString()}/mo apparently. See how bad your site is: ${window.location.origin}`;
+    } else if (score <= 6) {
+      text = `My site got ${score}/10 on RoastMyLP. Vibe: "${vibe}". Not great, not terrible. Roast yours: ${window.location.origin}`;
+    } else {
+      text = `🔥 My site scored ${score}/10 on RoastMyLP. Vibe: "${vibe}". Flexing hard. Check your score: ${window.location.origin}`;
+    }
+    Analytics.roastShared(roast.id, "twitter");
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const shareLinkedIn = () => {
+    Analytics.roastShared(roast.id, "linkedin");
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`,
       "_blank"
     );
+  };
+
+  const challengeFriend = () => {
+    const text = `⚔️ I scored ${roast.overallScore}/10 on RoastMyLP. Vibe: "${roast.vibe || "confused"}". I bet your site is worse. Prove me wrong: ${window.location.origin}?ref=${roast.id}`;
+    navigator.clipboard.writeText(text);
+    Analytics.challengeCopied(roast.id);
+    toast.success("Challenge copied! Send it to a friend.");
   };
 
   const totalCategories = Object.keys(scores).length;
@@ -260,7 +281,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         </motion.div>
       )}
 
-      {/* CTA - Fix Everything */}
+      {/* CTA - Fix Everything with urgency */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -270,9 +291,11 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <h3 className="font-display text-3xl text-white mb-2">
           Fix Everything for Just $49
         </h3>
-        <p className="text-ash-300 mb-4">
-          Get the complete Full Audit Report with every fix, priority recommendations, and a
-          downloadable PDF.
+        <p className="text-ash-300 mb-2 max-w-lg mx-auto">
+          Every week you wait is costing you <span className="text-fire-400 font-semibold">{formatCurrency(roast.totalMonthlyLoss / 4)}</span>. Stop the bleeding.
+        </p>
+        <p className="text-amber-400 text-sm mb-4">
+          ⏳ Limited audit capacity today. Most reports ship within 2 hours.
         </p>
         <p className="text-fire-400 font-bold text-4xl mb-6">
           {formatCurrency(roast.totalMonthlyLoss)}/mo
@@ -280,22 +303,23 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         </p>
         <a
           href="/pricing"
-          className="inline-flex items-center gap-2 rounded-xl bg-fire-500 px-8 py-3 text-lg font-bold text-white hover:bg-fire-600 transition-all"
+          onClick={() => Analytics.ctaClicked("full_audit")}
+          className="inline-flex items-center gap-2 rounded-xl bg-fire-500 px-8 py-3 text-lg font-bold text-white hover:bg-fire-600 transition-all animate-pulse"
         >
           <Flame className="h-5 w-5" />
           Get Full Audit — $49
         </a>
       </motion.div>
 
-      {/* Share section */}
+      {/* Share section with Challenge mechanic */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1 }}
         className="mb-10 text-center"
       >
-        <h3 className="font-display text-2xl text-white mb-4">Share This Roast</h3>
-        <div className="flex justify-center gap-3 flex-wrap">
+        <h3 className="font-display text-2xl text-white mb-4">Share the Damage</h3>
+        <div className="flex justify-center gap-3 flex-wrap mb-4">
           <button
             onClick={shareTwitter}
             className="flex items-center gap-2 rounded-xl bg-[#1DA1F2]/10 border border-[#1DA1F2]/30 px-5 py-2.5 text-sm font-medium text-[#1DA1F2] hover:bg-[#1DA1F2]/20 transition-all"
@@ -321,6 +345,13 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
             <Share2 className="h-4 w-4" /> Download Card
           </button>
         </div>
+        {/* Challenge a friend */}
+        <button
+          onClick={challengeFriend}
+          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fire-500/10 to-ember-500/10 border border-fire-500/20 px-5 py-2 text-sm font-medium text-ash-200 hover:border-fire-400/40 hover:bg-fire-500/10 transition-all"
+        >
+          ⚔️ Challenge a friend to beat your {roast.overallScore}/10
+        </button>
       </motion.div>
 
       {/* Feedback */}
@@ -341,8 +372,8 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         </button>
       </motion.div>
 
-      {/* Roast another */}
-      <div className="text-center pb-10">
+      {/* Roast another + re-roast retention */}
+      <div className="text-center pb-10 space-y-3">
         <a
           href="/"
           className="inline-flex items-center gap-2 rounded-xl border border-ash-600 bg-ash-800 px-6 py-3 text-sm font-medium text-ash-300 hover:bg-ash-700 transition-all"
@@ -350,6 +381,9 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
           <Flame className="h-4 w-4 text-fire-400" />
           Roast Another Website
         </a>
+        <p className="text-xs text-ash-600">
+          Made changes? <a href={`/?url=${encodeURIComponent(roast.url)}`} className="text-fire-400 hover:underline">Re-roast this site</a> and track your improvement.
+        </p>
       </div>
 
       {/* Viral share modal */}
@@ -358,7 +392,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
           <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="bg-ash-800 border border-ash-600 rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-display text-xl text-white mb-4 text-center">🔥 Share This Roast</h3>
             <div className="space-y-2">
-              <button onClick={() => { const t=`My website got a ${roast.overallScore}/10 roast score 😂 Check yours at roastmylp.com`; window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(t)}`,"_blank"); }} className="w-full rounded-lg bg-[#1DA1F2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1a8cd8]">🐦 Share on Twitter/X</button>
+              <button onClick={() => { shareTwitter(); setShowViralShare(false); }} className="w-full rounded-lg bg-[#1DA1F2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1a8cd8]">🐦 Share on Twitter/X</button>
               <button onClick={() => { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`,"_blank"); }} className="w-full rounded-lg bg-[#0A66C2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0959a8]">💼 Share on LinkedIn</button>
               <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copied!"); setShowViralShare(false); }} className="w-full rounded-lg bg-ash-700 px-4 py-2.5 text-sm font-bold text-ash-200 hover:bg-ash-600">📋 Copy Link</button>
               <button onClick={() => { window.location.href = `mailto:?subject=Your website got roasted 😂&body=Check out this savage roast of ${roast.domain}: ${window.location.href}`; }} className="w-full rounded-lg bg-ember-500/10 border border-ember-500/30 px-4 py-2.5 text-sm font-bold text-ember-400 hover:bg-ember-500/20">✉️ Email to site owner</button>

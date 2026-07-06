@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, Loader2, Flame } from "lucide-react";
 import toast from "react-hot-toast";
 import { BrutalitySelector } from "./BrutalitySelector";
+import { Analytics } from "@/lib/analytics";
+
+const LOADING_MESSAGES = [
+  { emoji: "🔍", text: "Scanning your website..." },
+  { emoji: "📸", text: "Judging your design choices..." },
+  { emoji: "🤖", text: "AI is finding things to mock..." },
+  { emoji: "💰", text: "Calculating your financial damage..." },
+  { emoji: "🔥", text: "Preparing your roast..." },
+  { emoji: "💀", text: "This might hurt a little..." },
+];
 
 interface UrlInputProps {
   isLoading: boolean;
@@ -16,12 +26,22 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
   const router = useRouter();
   const [url, setUrl] = useState("");
   const [brutalityLevel, setBrutalityLevel] = useState(2);
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  useEffect(() => {
+    if (!isLoading) { setMsgIndex(0); return; }
+    const interval = setInterval(() => {
+      setMsgIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
 
     setIsLoading(true);
+    Analytics.roastSubmitted(url.trim(), brutalityLevel);
     try {
       const res = await fetch("/api/roast", {
         method: "POST",
@@ -32,6 +52,7 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
       const data = await res.json();
 
       if (!res.ok) {
+        Analytics.roastFailed(url.trim(), data.code || "unknown");
         if (data.code === "LIMIT_EXCEEDED") {
           toast.error(data.error);
         } else {
@@ -44,6 +65,7 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
       localStorage.setItem("lastRoast", JSON.stringify(data));
       router.push(`/roast/${data.id}`);
     } catch {
+      Analytics.roastFailed(url.trim(), "network_error");
       toast.error("Something went wrong. Try again!");
       setIsLoading(false);
     }
@@ -87,12 +109,33 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
           </div>
         </div>
 
+        {/* Loading progress message */}
+        <AnimatePresence>
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              key={msgIndex}
+              className="mt-4 flex items-center justify-center gap-2 text-sm text-ash-300"
+            >
+              <span className="text-lg">{LOADING_MESSAGES[msgIndex].emoji}</span>
+              <span>{LOADING_MESSAGES[msgIndex].text}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Brutality selector */}
         <BrutalitySelector
           brutalityLevel={brutalityLevel}
           setBrutalityLevel={setBrutalityLevel}
           disabled={isLoading}
         />
+
+        {/* Privacy reassurance */}
+        <p className="mt-3 text-center text-xs text-ash-600">
+          🔒 No sign-up needed. Roasts are private by default — only you decide to share.
+        </p>
       </motion.form>
     </section>
   );

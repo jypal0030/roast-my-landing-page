@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import "./globals.css";
 
 const inter = Inter({
@@ -50,6 +51,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${bebasNeue.variable} antialiased`}>
         <Providers>
+          <AnalyticsTracker />
           <div className="flex min-h-screen flex-col">
             <Header />
             <main className="flex-1">{children}</main>

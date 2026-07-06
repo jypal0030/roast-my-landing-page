@@ -1,9 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Zap } from "lucide-react";
 
 export function HeroSection() {
+  const [roastCount, setRoastCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => setRoastCount(d.roastCount ?? 0))
+      .catch(() => setRoastCount(0));
+  }, []);
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:py-32">
       {/* Background glow */}
@@ -46,7 +55,16 @@ export function HeroSection() {
           to share.
         </motion.p>
 
-        {/* Live counter */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="mt-4 text-sm text-ash-500 max-w-lg mx-auto"
+        >
+          🔒 No sign-up required for your first roast. We never store your website data permanently.
+        </motion.p>
+
+        {/* Live counter — fetches from API */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -55,7 +73,7 @@ export function HeroSection() {
         >
           <Flame className="h-5 w-5 text-fire-500 animate-pulse" />
           <span className="text-sm">
-            <span className="font-bold text-white">12,847</span> websites roasted and counting
+            <span id="roast-counter" className="font-bold text-white">{roastCount === null ? "..." : roastCount === 0 ? "Be the first —" : roastCount.toLocaleString()}</span> websites roasted. <span className="text-fire-400">Be the next.</span>
           </span>
         </motion.div>
       </div>

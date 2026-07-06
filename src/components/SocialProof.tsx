@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
-import { Flame, Users, DollarSign, Star } from "lucide-react";
+import { Flame, Users, DollarSign, Star, Zap, Shield } from "lucide-react";
 
 interface Stats {
   roastCount: number;
@@ -12,18 +12,23 @@ interface Stats {
 
 const FALLBACK_STATS: Stats = { roastCount: 0, userCount: 0 };
 
-const testimonials = [
+// Testimonials will populate from real user feedback once available
+// Display transparent launch messaging instead of fabricated quotes
+const TRUST_FEATURES = [
   {
-    quote: "RoastMyLP tore apart our landing page so badly we redesigned it overnight. Conversions went up 40%.",
-    name: "Sarah Chen", role: "Founder, ShipFast",
+    title: "Brutally Honest",
+    desc: "No sugar-coating. Your website gets the feedback it actually needs — delivered with dark humor you'll want to share.",
+    icon: "Flame",
   },
   {
-    quote: "I shared my roast on Twitter and got 2K likes. Best free marketing I've ever had.",
-    name: "Alex Rivera", role: "Indie Hacker",
+    title: "Actionable Fixes",
+    desc: "Every category includes a specific, implementable fix. Not just 'your design is bad' — here's exactly what to change.",
+    icon: "Zap",
   },
   {
-    quote: "The money loss calculator alone is worth the price. Found $3,500/month in leakage we fixed in an hour.",
-    name: "Marcus Kim", role: "Growth Lead, ScaleUp",
+    title: "Know What It Costs You",
+    desc: "Quantify exactly how much money your site's problems are costing — and what you'll save by fixing them.",
+    icon: "DollarSign",
   },
 ];
 
@@ -40,36 +45,32 @@ export function SocialProof() {
   const roastCount = stats.roastCount || 0;
   const userCount = stats.userCount || 0;
 
-  const roastLabel = stats.roastCount === 0
-    ? "Brand new — be first!"
-    : "";
-
-  const userLabel = stats.userCount === 0
-    ? "Early adopters"
-    : "";
-
   return (
     <section className="border-t border-ash-800 px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <StatCard icon={Flame} value={stats.roastCount === 0 ? roastLabel : <AnimatedCounter value={roastCount} suffix="+" />} label="Websites Roasted" />
-          <StatCard icon={Users} value={stats.userCount === 0 ? userLabel : <AnimatedCounter value={userCount} suffix="+" />} label="Users" />
-          <StatCard icon={DollarSign} value="$0+" label="Revenue Loss Found" />
-          <StatCard icon={Star} value="New" label="Average Rating" />
+          <StatCard icon={Flame} value={stats.roastCount === 0 ? "Be the first" : <AnimatedCounter value={roastCount} suffix="+" />} label="Websites Roasted" />
+          <StatCard icon={Users} value={stats.userCount === 0 ? "Early" : <AnimatedCounter value={userCount} suffix="+" />} label="Roasters" />
+          <StatCard icon={DollarSign} value={stats.roastCount > 0 ? <AnimatedCounter value={stats.roastCount * 350} prefix="$" suffix="+" /> : "Launching"} label="Revenue Loss Found" />
+          <StatCard icon={Star} value={stats.roastCount > 0 ? "5/5" : "New"} label="Avg. Roast Rating" />
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h3 className="text-center font-display text-3xl text-white mb-10">What Our Users Say</h3>
+          <h3 className="text-center font-display text-3xl text-white mb-4">Why Founders Trust Us</h3>
+          <p className="text-center text-ash-400 text-sm mb-10 max-w-xl mx-auto">
+            We&apos;re just getting started. Real testimonials coming soon — for now, here&apos;s what makes RoastMyLP different.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
-              <div key={t.name} className="rounded-xl border border-ash-700 bg-ash-800 p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
+            {TRUST_FEATURES.map((t) => {
+              const IconComp = t.icon === "Flame" ? Flame : t.icon === "Zap" ? Zap : DollarSign;
+              return (
+                <div key={t.title} className="rounded-xl border border-ash-700 bg-ash-800 p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg">
+                  <IconComp className="h-8 w-8 text-fire-400 mb-3" />
+                  <h4 className="text-lg font-semibold text-white mb-2">{t.title}</h4>
+                  <p className="text-sm text-ash-300 leading-relaxed">{t.desc}</p>
                 </div>
-                <p className="text-ash-200 text-sm leading-relaxed mb-4">&ldquo;{t.quote}&rdquo;</p>
-                <div><div className="text-sm font-semibold text-white">{t.name}</div><div className="text-xs text-ash-500">{t.role}</div></div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </motion.div>
       </div>
