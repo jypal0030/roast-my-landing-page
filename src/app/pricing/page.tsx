@@ -214,7 +214,7 @@ export default function PricingPage() {
         order_id: data.orderId,
         prefill: { email: session.user?.email },
         theme: { color: "#EF4444" },
-        handler: async (response: any) => {
+        handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
           toast.success("Payment successful! 🎉");
           await fetch("/api/razorpay/verify", {
             method: "POST",
@@ -452,7 +452,7 @@ export default function PricingPage() {
             className="rounded-2xl border border-fire-500/10 bg-gradient-to-r from-fire-500/[0.04] via-transparent to-ember-500/[0.04] p-8 sm:p-10"
           >
             <div className="font-display text-5xl sm:text-7xl text-white mb-2">
-              <CountUp value={roastCount || 12847} duration={2} suffix="+" />
+              <CountUp value={roastCount || 12847} duration={2} prefix="" />+
             </div>
             <p className="text-ash-300 mb-6">websites already roasted — and countless dollars in revenue saved</p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-ash-400">
@@ -694,7 +694,7 @@ const compareFeatures = [
   "Referral levels",
 ];
 
-function ComparisonTable({ tiers }: { tiers: typeof tiers }) {
+function ComparisonTable({ tiers }: { tiers: Array<{ name: string; highlight?: boolean; features: Array<{ text: string; included: boolean }> }> }) {
   return (
     <div className="rounded-2xl border border-white/[0.06] bg-card overflow-hidden">
       <div className="overflow-x-auto">
@@ -702,7 +702,7 @@ function ComparisonTable({ tiers }: { tiers: typeof tiers }) {
           <thead>
             <tr className="border-b border-white/[0.06]">
               <th className="text-left p-4 font-semibold text-white">Feature</th>
-              {tiers.map((t: any) => (
+              {tiers.map((t) => (
                 <th key={t.name} className={cn("p-4 text-center font-display text-white uppercase tracking-wide", t.highlight && "bg-fire-500/5")}>
                   {t.name}
                 </th>
@@ -713,8 +713,8 @@ function ComparisonTable({ tiers }: { tiers: typeof tiers }) {
             {compareFeatures.map((feature, i) => (
               <tr key={feature} className={cn("border-b border-white/[0.04]", i % 2 === 0 && "bg-white/[0.01]")}>
                 <td className="p-4 text-ash-300">{feature}</td>
-                {tiers.map((t: any) => {
-                  const f = t.features.find((f: any) =>
+                {tiers.map((t) => {
+                  const f = t.features.find((f) =>
                     f.text.toLowerCase().includes(feature.toLowerCase())
                   );
                   return (
