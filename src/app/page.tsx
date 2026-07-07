@@ -4,12 +4,11 @@ import { useState } from "react";
 import { HeroSection } from "@/components/HeroSection";
 import { UrlInput } from "@/components/UrlInput";
 import { HowItWorks } from "@/components/HowItWorks";
+import { FeaturesSection } from "@/components/FeaturesSection";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
-import { RoastPreview } from "@/components/RoastPreview";
 import { WallOfShame } from "@/components/WallOfShame";
-import { PricingTable } from "@/components/PricingTable";
-import { FAQSection } from "@/components/FAQSection";
 import { SocialProof } from "@/components/SocialProof";
+import { FAQSection } from "@/components/FAQSection";
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,10 +19,9 @@ export default function HomePage() {
       <HeroSection />
       <UrlInput isLoading={isLoading} setIsLoading={setIsLoading} />
       <HowItWorks />
-      <RoastPreview />
+      <FeaturesSection />
       <WallOfShame />
       <SocialProof />
-      <PricingTable />
       <FAQSection />
     </div>
   );
