@@ -45,19 +45,17 @@ export function FAQSection() {
   return (
     <section id="faq" className="border-t border-ash-800 px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-3xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="font-display text-4xl sm:text-5xl text-white mb-4">
-            Frequently Asked Questions
+        <div className="text-center mb-12">
+          <p className="text-xs font-display tracking-[0.2em] text-fire-500 mb-4">
+            FAQ
+          </p>
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-white uppercase leading-[1] tracking-[-0.03em] mb-4">
+            FREQUENTLY ASKED QUESTIONS
           </h2>
-          <p className="text-ash-400">
+          <p className="text-ash-300">
             Everything you need to know before getting roasted.
           </p>
-        </motion.div>
+        </div>
 
         <div className="space-y-3">
           {faqs.map((faq, i) => (

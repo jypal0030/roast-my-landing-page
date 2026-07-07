@@ -56,8 +56,13 @@ export function SocialProof() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h3 className="text-center font-display text-3xl text-white mb-4">Why Founders Trust Us</h3>
-          <p className="text-center text-ash-400 text-sm mb-10 max-w-xl mx-auto">
+          <p className="text-center text-xs font-display tracking-[0.2em] text-fire-500 mb-4">
+            TRUST
+          </p>
+          <h3 className="text-center font-display text-3xl sm:text-4xl text-white uppercase leading-[1] tracking-[-0.03em] mb-4">
+            WHY FOUNDERS TRUST US
+          </h3>
+          <p className="text-center text-ash-300 text-sm mb-10 max-w-xl mx-auto">
             We&apos;re just getting started. Real testimonials coming soon — for now, here&apos;s what makes RoastMyLP different.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

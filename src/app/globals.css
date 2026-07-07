@@ -32,6 +32,10 @@
   --color-ash-100: #e8e8f0;
   --color-ash-50: #f4f4f8;
 
+  --color-card: #252540;
+  --color-popover: #2a2a48;
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+
   --animate-float: float 6s ease-in-out infinite;
   --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
   --animate-score-reveal: score-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;

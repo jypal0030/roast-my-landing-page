@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Zap } from "lucide-react";
 
+const headingLines = [
+  "YOUR WEBSITE IS",
+  null, // handled specially below — "BLEEDING" + gradient "MONEY"
+];
+
 export function HeroSection() {
   const [roastCount, setRoastCount] = useState<number | null>(null);
 
@@ -13,8 +18,9 @@ export function HeroSection() {
       .then((d) => setRoastCount(d.roastCount ?? 0))
       .catch(() => setRoastCount(0));
   }, []);
+
   return (
-    <section className="relative overflow-hidden px-4 py-20 sm:py-32">
+    <section className="relative overflow-hidden px-4 py-20 sm:py-32 lg:py-40">
       {/* Background glow */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-fire-500/10 blur-3xl" />
@@ -22,32 +28,47 @@ export function HeroSection() {
       </div>
 
       <div className="mx-auto max-w-4xl text-center">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 inline-flex items-center gap-2 badge-premium"
-        >
-          <Zap className="h-4 w-4 text-fire-400" />
-          <span>AI-Powered Website Analysis</span>
-        </motion.div>
-
-        {/* Heading with gradient */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="font-display text-5xl sm:text-7xl lg:text-8xl 2xl:text-9xl text-white leading-[0.95] uppercase"
-        >
-          Your Website Is
-          <br />
-          <span className="gradient-text-fire">Bleeding Money</span>
-        </motion.h1>
-
+        {/* PART 1: Tiny micro-label — wide-spaced Bebas Neue */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ duration: 0.5 }}
+          className="text-xs font-display tracking-[0.2em] text-fire-500 mb-6"
+        >
+          AI-POWERED WEBSITE ANALYSIS
+        </motion.p>
+
+        {/* PART 2: THE SIGNATURE MOVE — staggered blur reveal */}
+        <div className="mb-6">
+          {/* Line 1 */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0, 0, 0.2, 1] }}
+            className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-white uppercase leading-[1] tracking-[-0.04em]"
+          >
+            YOUR WEBSITE IS
+          </motion.h1>
+
+          {/* Line 2: "BLEEDING" (white) + "MONEY" (gradient — THE punch word) */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ duration: 0.6, delay: 0.27, ease: [0, 0, 0.2, 1] }}
+            className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl text-white uppercase leading-[1] tracking-[-0.04em]"
+          >
+            BLEEDING{" "}
+            <span className="bg-gradient-to-r from-fire-400 via-fire-500 to-amber-400 bg-clip-text text-transparent">
+              MONEY
+            </span>
+          </motion.h1>
+        </div>
+
+        {/* PART 3: Subtitle — Inter, max-w-2xl */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5, ease: [0, 0, 0.2, 1] }}
           className="mt-6 text-lg sm:text-xl text-ash-300 max-w-2xl mx-auto"
         >
           Brutally honest AI roasts your landing page in seconds. Get savage feedback, a
@@ -58,22 +79,25 @@ export function HeroSection() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
           className="mt-4 text-sm text-ash-500 max-w-lg mx-auto"
         >
           🔒 No sign-up required for your first roast. We never store your website data permanently.
         </motion.p>
 
-        {/* Live counter — fetches from API */}
+        {/* Live counter */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
           className="mt-8 flex items-center justify-center gap-2 text-ash-400"
         >
           <Flame className="h-5 w-5 text-fire-500 animate-pulse" />
           <span className="text-sm">
-            <span id="roast-counter" className="font-bold text-white">{roastCount === null ? "..." : roastCount === 0 ? "Be the first —" : roastCount.toLocaleString()}</span> websites roasted. <span className="text-fire-400">Be the next.</span>
+            <span id="roast-counter" className="font-bold text-white">
+              {roastCount === null ? "..." : roastCount === 0 ? "Be the first —" : roastCount.toLocaleString()}
+            </span>{" "}
+            websites roasted. <span className="text-fire-400">Be the next.</span>
           </span>
         </motion.div>
       </div>

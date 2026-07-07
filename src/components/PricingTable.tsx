@@ -108,10 +108,22 @@ export function PricingTable() {
   return (
     <section id="pricing" className="border-t border-ash-800 px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-7xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
-          <h2 className="font-display text-4xl sm:text-5xl text-white mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-ash-400 max-w-xl mx-auto">Start free, upgrade when you need more. One-time purchases available. Secured by Paddle (Merchant of Record).</p>
-        </motion.div>
+        <div className="text-center mb-12 lg:mb-16">
+          <p className="text-xs font-display tracking-[0.2em] text-fire-500 mb-4">
+            PRICING
+          </p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-display text-3xl sm:text-4xl md:text-5xl text-white uppercase leading-[1] tracking-[-0.03em] mb-4"
+          >
+            SIMPLE, TRANSPARENT PRICING
+          </motion.h2>
+          <p className="text-ash-300 max-w-xl mx-auto">
+            Start free, upgrade when you need more. One-time purchases available. Secured by Paddle (Merchant of Record).
+          </p>
+        </div>
         <motion.div variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {tiers.map((tier) => (
             <motion.div key={tier.name} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
