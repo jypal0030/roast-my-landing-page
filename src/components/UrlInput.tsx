@@ -133,7 +133,7 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
         />
 
         {/* Privacy reassurance */}
-        <p className="mt-3 text-center text-xs text-ash-600">
+        <p className="mt-3 text-center text-xs text-ash-500">
           🔒 No sign-up needed. Roasts are private by default — only you decide to share.
         </p>
       </motion.form>

@@ -60,14 +60,18 @@ export function DashboardClient({ user, roasts, payments, referralCounts }: Dash
         <div className="lg:col-span-2">
           <h2 className="font-display text-2xl text-white mb-4">Roast History</h2>
           {roasts.length === 0 ? (
-            <div className="rounded-xl border border-ash-700 bg-ash-800/50 p-8 text-center">
-              <Flame className="h-10 w-10 text-ash-600 mx-auto mb-3" />
-              <p className="text-ash-400 mb-4">No roasts yet. Time to roast something!</p>
+            <div className="rounded-xl border border-ash-700 bg-ash-800/50 p-10 text-center">
+              <div className="font-display text-6xl text-ash-700 mb-4">0</div>
+              <p className="text-ash-400 text-lg mb-2">Your roast history is empty.</p>
+              <p className="text-ash-600 text-sm mb-6 max-w-sm mx-auto">
+                Either your website is perfect (it&apos;s not) or you&apos;re avoiding the truth. Time to find out which.
+              </p>
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 rounded-lg bg-fire-500 px-4 py-2 text-sm font-bold text-white hover:bg-fire-600"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-fire-500 to-fire-600 px-6 py-3 text-sm font-bold text-white hover:from-fire-400 hover:to-fire-500 active:scale-95 transition-all duration-150"
+                style={{ boxShadow: "0 0 30px rgba(233,69,96,0.2)" }}
               >
-                <Flame className="h-4 w-4" /> Roast Your First Site
+                <Flame className="h-4 w-4" /> Face the Truth
               </Link>
             </div>
           ) : (
