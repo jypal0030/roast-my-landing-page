@@ -26,13 +26,13 @@ export function Header() {
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             href="/pricing"
-            className="text-ash-300 hover:text-white active:scale-95 transition-all duration-300 text-sm font-medium"
+            className="text-ash-300 hover:text-white active:scale-95 transition-all duration-150 text-sm font-medium"
           >
             Pricing
           </Link>
           <Link
             href="/#gallery"
-            className="text-ash-300 hover:text-white active:scale-95 transition-all duration-300 text-sm font-medium"
+            className="text-ash-300 hover:text-white active:scale-95 transition-all duration-150 text-sm font-medium"
           >
             Wall of Shame
           </Link>
@@ -40,21 +40,21 @@ export function Header() {
             <div className="flex items-center gap-4">
               <Link
                 href="/referral"
-                className="flex items-center gap-1 text-ash-300 hover:text-ember-400 active:scale-95 transition-all duration-300 text-sm font-medium"
+                className="flex items-center gap-1 text-ash-300 hover:text-ember-400 active:scale-95 transition-all duration-150 text-sm font-medium"
               >
                 <Gift className="h-4 w-4" />
                 Referrals
               </Link>
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1 text-ash-300 hover:text-white active:scale-95 transition-all duration-300 text-sm font-medium"
+                className="flex items-center gap-1 text-ash-300 hover:text-white active:scale-95 transition-all duration-150 text-sm font-medium"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard
               </Link>
               <button
                 onClick={() => signOut()}
-                className="flex items-center gap-1 text-ash-300 hover:text-fire-400 active:scale-95 transition-all duration-300 text-sm font-medium"
+                className="flex items-center gap-1 text-ash-300 hover:text-fire-400 active:scale-95 transition-all duration-150 text-sm font-medium"
               >
                 <LogOut className="h-4 w-4" />
                 Sign Out

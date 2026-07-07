@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue } from "next/font/google";
+import { Inter, Bebas_Neue, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
@@ -10,12 +10,20 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-display",
   subsets: ["latin"],
   weight: "400",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -49,7 +57,7 @@ export default function RootLayout({
       <head>
         <script src="https://cdn.paddle.com/paddle/v2/paddle.js" async />
       </head>
-      <body className={`${inter.variable} ${bebasNeue.variable} antialiased`}>
+      <body className={`${inter.variable} ${bebasNeue.variable} ${jetbrainsMono.variable} antialiased`}>
         <Providers>
           <AnalyticsTracker />
           <div className="flex min-h-screen flex-col">
@@ -61,9 +69,20 @@ export default function RootLayout({
             position="bottom-right"
             toastOptions={{
               style: {
-                background: "#1a1a2e",
-                color: "#e8e8f0",
-                border: "1px solid #333355",
+                background: "#252540",
+                color: "#e0e0e8",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)",
+              },
+              success: {
+                style: {
+                  border: "1px solid rgba(16,185,129,0.2)",
+                },
+              },
+              error: {
+                style: {
+                  border: "1px solid rgba(233,69,96,0.3)",
+                },
               },
             }}
           />

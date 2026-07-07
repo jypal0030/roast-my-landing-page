@@ -37,7 +37,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="font-display text-5xl sm:text-7xl lg:text-8xl text-white leading-[0.95]"
+          className="font-display text-5xl sm:text-7xl lg:text-8xl 2xl:text-9xl text-white leading-[0.95] uppercase"
         >
           Your Website Is
           <br />

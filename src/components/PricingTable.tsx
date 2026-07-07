@@ -115,7 +115,8 @@ export function PricingTable() {
         <motion.div variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }} initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {tiers.map((tier) => (
             <motion.div key={tier.name} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-              className={cn("relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-fire-500/10", tier.highlight ? "border-fire-500/50 bg-fire-500/5 ring-1 ring-fire-500/20" : "border-ash-700 bg-ash-800/50 hover:border-ash-600")}>
+              className={cn("relative rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02]", tier.highlight ? "border-fire-500/50 bg-fire-500/5 ring-1 ring-fire-500/20" : "border-ash-700 bg-ash-800/50 hover:border-ash-600")}
+              style={tier.highlight ? { boxShadow: "0 0 40px rgba(233,69,96,0.15), 0 0 80px rgba(233,69,96,0.06), 0 8px 32px rgba(0,0,0,0.4)" } : undefined}>
               {tier.highlight && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-fire-500 px-3 py-1 text-xs font-bold text-white">MOST POPULAR</div>}
               <tier.icon className="h-8 w-8 text-fire-400 mb-4" />
               <h3 className="text-lg font-bold text-white mb-1">{tier.name}</h3>

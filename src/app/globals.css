@@ -177,8 +177,9 @@
   opacity: 0.3;
 }
 
+/* Body: ash-800 = hsl(242,28%,14%) — not pure black. Blue undertone for warmth. */
 body {
-  background-color: var(--color-ash-900);
+  background-color: var(--color-ash-800);
   color: var(--color-ash-100);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -221,7 +222,7 @@ html {
   outline-offset: 2px;
 }
 
-/* No flash on load */
+/* No flash on load — must match body background exactly */
 html {
-  background-color: var(--color-ash-900);
+  background-color: var(--color-ash-800);
 }

@@ -121,11 +121,11 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <ScoreGauge score={roast.overallScore} size={280} />
       </div>
 
-      {/* ─── THE VIBE — a single utterance from the void ─── */}
+      {/* ─── THE VIBE — a single utterance from the void — T=1500ms ─── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.8 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
         className="text-center mb-16 sm:mb-24"
       >
         <span className={`font-display text-6xl sm:text-8xl md:text-9xl lowercase leading-none ${vibeClass}`}>
@@ -136,12 +136,12 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
       {/* ─── VOID BETWEEN ─── */}
       <div className="mb-16 sm:mb-24" />
 
-      {/* ─── THE LOSS — quiet valley of pain ─── */}
+      {/* ─── THE LOSS — quiet valley of pain — T=2200ms ─── */}
       <div className="text-center mb-20 sm:mb-32">
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
+          transition={{ delay: 2.2, duration: 0.5 }}
           className="text-ash-500 text-xs tracking-[0.3em] uppercase mb-6"
         >
           You are losing
@@ -149,7 +149,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
+          transition={{ delay: 2.5, duration: 0.6 }}
           className="font-display text-5xl sm:text-7xl font-bold text-fire-400 mb-3"
         >
           <CountUp value={roast.totalMonthlyLoss} duration={3} />
@@ -157,7 +157,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
+          transition={{ delay: 2.7, duration: 0.5 }}
           className="text-base text-ash-500"
         >
           per month. That&apos;s <span className="text-ash-400"><CountUp value={roast.yearlyLoss} duration={3.5} /></span> per year.
@@ -177,7 +177,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
               key={key}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1 + i * 0.12, duration: 0.6 }}
+              transition={{ delay: 3.0 + i * 0.08, duration: 0.6 }}
             >
               <button
                 onClick={() => setExpandedCategory(isExpanded ? null : key)}
@@ -233,7 +233,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
                 key={i}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.5 + i * 0.1 }}
+                transition={{ delay: 3.5 + i * 0.1 }}
                 className="flex gap-4"
               >
                 <span className="text-2xl font-display text-emerald-400/40 shrink-0 leading-none mt-0.5">
@@ -254,7 +254,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.7 }}
+          transition={{ delay: 4.0, duration: 0.5 }}
           className="text-ash-600 text-xs tracking-[0.2em] uppercase mb-10"
         >
           Stop the bleeding
@@ -264,7 +264,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
           onClick={() => Analytics.ctaClicked("full_audit")}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.8, duration: 0.6 }}
+          transition={{ delay: 4.2, duration: 0.6, ease: [0, 0, 0.2, 1] }}
           className="inline-block rounded-2xl bg-gradient-to-b from-fire-500 to-fire-600 px-12 py-5 text-lg font-bold text-white hover:from-fire-400 hover:to-fire-500 active:scale-95 transition-all duration-300"
           style={{ boxShadow: "0 0 60px rgba(233,69,96,0.25), 0 8px 32px rgba(233,69,96,0.15)" }}
         >
@@ -273,7 +273,7 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
+          transition={{ delay: 4.5, duration: 0.5 }}
           className="text-ash-600 text-xs mt-6"
         >
           {formatCurrency(roast.totalMonthlyLoss)}/mo in losses vs $49 one-time
