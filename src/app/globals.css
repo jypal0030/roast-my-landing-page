@@ -181,4 +181,47 @@ body {
   background-color: var(--color-ash-900);
   color: var(--color-ash-100);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection — brand at 30% */
+::selection {
+  background: rgba(233, 69, 96, 0.3);
+  color: #fff;
+}
+::-moz-selection {
+  background: rgba(233, 69, 96, 0.3);
+  color: #fff;
+}
+
+/* Custom scrollbar — themed, subtle */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ash-900);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(233, 69, 96, 0.3);
+}
+
+/* Focus visible — accessible + on-brand */
+*:focus-visible {
+  outline: 2px solid rgba(233, 69, 96, 0.5);
+  outline-offset: 2px;
+}
+
+/* No flash on load */
+html {
+  background-color: var(--color-ash-900);
 }

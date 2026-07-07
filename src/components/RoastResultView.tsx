@@ -9,7 +9,7 @@ import { CountUp } from "@/components/CountUp";
 import { ShareCard } from "./ShareCard";
 import { FireParticles } from "@/components/FireParticles";
 import { Analytics } from "@/lib/analytics";
-import { formatCurrency, getScoreBgColor } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 interface RoastResultViewProps {
