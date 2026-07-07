@@ -72,7 +72,7 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
   };
 
   return (
-    <section className="px-4 pb-20">
+    <section id="url-input" className="px-4 pb-20">
       <motion.form
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

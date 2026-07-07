@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Zap } from "lucide-react";
-
-const headingLines = [
-  "YOUR WEBSITE IS",
-  null, // handled specially below — "BLEEDING" + gradient "MONEY"
-];
+import { Flame, AlertTriangle } from "lucide-react";
 
 export function HeroSection() {
   const [roastCount, setRoastCount] = useState<number | null>(null);
@@ -38,7 +33,20 @@ export function HeroSection() {
           AI-POWERED WEBSITE ANALYSIS
         </motion.p>
 
-        {/* PART 2: THE SIGNATURE MOVE — staggered blur reveal */}
+        {/* Warning banner — the hook before the headline */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08, duration: 0.4, ease: [0, 0, 0.2, 1] }}
+          className="mb-8 inline-flex items-center gap-2 rounded-lg border border-fire-500/20 bg-fire-500/5 px-4 py-2"
+        >
+          <AlertTriangle className="h-4 w-4 text-fire-400" />
+          <span className="text-sm font-medium text-fire-300">
+            TRUTH HURTS. YOUR BANK ACCOUNT HURTS MORE.
+          </span>
+        </motion.div>
+
+        {/* PART 2: THE SIGNATURE MOVE */}
         <div className="mb-6">
           {/* Line 1 */}
           <motion.h1

@@ -39,7 +39,7 @@ const childVariants = {
 
 export function HowItWorks() {
   return (
-    <section className="border-t border-white/[0.06] px-4 py-16 sm:py-24 lg:py-32">
+    <section id="how-it-works" className="border-t border-white/[0.06] px-4 py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-6xl">
         {/* ─── Section heading: 3-part pattern ─── */}
         <div className="text-center mb-16 sm:mb-20">
