@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Flame, ArrowUpRight, Github, Twitter, Linkedin } from "lucide-react";
+import { Flame, ArrowUpRight, ExternalLink, Globe, MessageCircle } from "lucide-react";
 
 const productLinks = [
   { href: "/#how-it-works", label: "How It Works" },
@@ -54,13 +54,13 @@ export function Footer() {
             {/* Social + CTA */}
             <div className="flex items-center gap-3">
               <a href="https://twitter.com" target="_blank" rel="noopener" className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.06] text-ash-400 hover:text-fire-400 hover:border-fire-500/20 hover:bg-fire-500/5 transition-all duration-150">
-                <Twitter className="h-4 w-4" />
+                <Globe className="h-4 w-4" />
               </a>
               <a href="https://github.com" target="_blank" rel="noopener" className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.06] text-ash-400 hover:text-fire-400 hover:border-fire-500/20 hover:bg-fire-500/5 transition-all duration-150">
-                <Github className="h-4 w-4" />
+                <ExternalLink className="h-4 w-4" />
               </a>
               <a href="https://linkedin.com" target="_blank" rel="noopener" className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/[0.06] text-ash-400 hover:text-fire-400 hover:border-fire-500/20 hover:bg-fire-500/5 transition-all duration-150">
-                <Linkedin className="h-4 w-4" />
+                <MessageCircle className="h-4 w-4" />
               </a>
             </div>
           </div>
