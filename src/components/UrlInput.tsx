@@ -80,9 +80,9 @@ export function UrlInput({ isLoading, setIsLoading }: UrlInputProps) {
         onSubmit={handleSubmit}
         className="mx-auto max-w-2xl"
       >
-        {/* URL input */}
+        {/* URL input — glass morphism card */}
         <div className="relative">
-          <div className="flex gap-0 rounded-2xl bg-ash-800 border border-ash-600 focus-within:border-fire-500/50 transition-colors overflow-hidden">
+          <div className="flex gap-0 rounded-2xl bg-ash-800/80 border border-white/[0.08] focus-within:border-fire-500/40 transition-all duration-300 overflow-hidden backdrop-blur shadow-[0_4px_24px_rgba(0,0,0,0.4),0_0_60px_rgba(233,69,96,0.05)] focus-within:shadow-[0_4px_24px_rgba(0,0,0,0.4),0_0_60px_rgba(233,69,96,0.15)]">
             <div className="flex items-center pl-4">
               <Search className="h-5 w-5 text-ash-400" />
             </div>

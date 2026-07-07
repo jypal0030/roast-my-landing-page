@@ -91,8 +91,8 @@ export function HeroSection() {
           >
             BLEEDING{" "}
             <span
-              className="bg-gradient-to-r from-fire-400 via-fire-500 to-amber-400 bg-clip-text text-transparent"
-              style={{ textShadow: "none", filter: "drop-shadow(0 0 40px rgba(233,69,96,0.4)) drop-shadow(0 0 80px rgba(251,146,60,0.2))" }}
+              className="bg-[linear-gradient(90deg,#fb7185,#e94560,#f59e0b,#fb7185)] bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-shift"
+              style={{ filter: "drop-shadow(0 0 40px rgba(233,69,96,0.4)) drop-shadow(0 0 80px rgba(251,146,60,0.2))" }}
             >
               MONEY
             </span>

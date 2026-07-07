@@ -233,6 +233,50 @@ html {
 
 /* ─── TEXT VISIBILITY ENHANCEMENTS ─── */
 
+/* Animated gradient shift */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient-shift {
+  animation: gradient-shift 3s ease-in-out infinite;
+}
+
+/* Animated border gradient for cards */
+@keyframes border-gradient {
+  0%, 100% { border-color: rgba(233, 69, 96, 0.1); }
+  33% { border-color: rgba(251, 146, 60, 0.15); }
+  66% { border-color: rgba(16, 185, 129, 0.1); }
+}
+.animate-border-gradient {
+  animation: border-gradient 4s ease-in-out infinite;
+}
+
+/* Shine effect on hover */
+@keyframes shine {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+.shine-on-hover {
+  position: relative;
+  overflow: hidden;
+}
+.shine-on-hover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  transform: translateX(-100%) skewX(-15deg);
+  pointer-events: none;
+}
+.shine-on-hover:hover::after {
+  animation: shine 0.8s ease-out;
+}
+
 /* Text glow for dark backgrounds */
 .text-glow-fire {
   text-shadow: 0 0 40px rgba(233, 69, 96, 0.3), 0 0 80px rgba(233, 69, 96, 0.1);
