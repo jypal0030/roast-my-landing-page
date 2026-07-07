@@ -1,31 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import {
-  Share2,
-  Copy,
-  Flame,
-  ExternalLink,
-  DollarSign,
-  TrendingDown,
-  Shield,
-  Eye,
-  Smartphone,
-  Zap,
-  PenTool,
-  Timer,
-  Layers,
-} from "lucide-react";
+import { Copy } from "lucide-react";
 import { ScoreGauge } from "./ScoreGauge";
-import { MoneyLossCalculator } from "./MoneyLossCalculator";
-import { FeedbackButtons } from "./FeedbackButtons";
+import { CountUp } from "@/components/CountUp";
 import { ShareCard } from "./ShareCard";
 import { FireParticles } from "@/components/FireParticles";
-import { TiltCard } from "@/components/TiltCard";
 import { Analytics } from "@/lib/analytics";
-import { formatCurrency, getScoreBgColor, getBrutalityLabel } from "@/lib/utils";
+import { formatCurrency, getScoreBgColor } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 interface RoastResultViewProps {
@@ -49,17 +33,6 @@ interface RoastResultViewProps {
   };
   lighthouse: Record<string, unknown> | null;
 }
-
-const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  firstImpression: Eye,
-  copywriting: PenTool,
-  visualDesign: Layers,
-  ctaClarity: Flame,
-  mobileFriendliness: Smartphone,
-  loadingSpeed: Timer,
-  trustSignals: Shield,
-  aboveTheFold: TrendingDown,
-};
 
 const CATEGORY_LABELS: Record<string, string> = {
   firstImpression: "First Impression",
@@ -131,363 +104,223 @@ export function RoastResultView({ roast, scores, roastData, lighthouse }: RoastR
 
   const totalCategories = Object.keys(scores).length;
 
-  const vibeColor =
+  const vibeClass =
     roast.overallScore >= 8 ? "gradient-text-ember" :
     roast.overallScore >= 6 ? "gradient-text-gold" :
     "gradient-text-fire";
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:py-16 relative">
+    <div className="mx-auto max-w-3xl px-6 relative">
       <FireParticles />
-      {/* ── HEADER: Score + Vibe ── */}
-      <div className="text-center mb-12">
-        {/* Domain badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-flex items-center gap-2 rounded-full glass-panel px-4 py-1.5 text-xs font-medium text-ash-400 mb-8"
-        >
-          <ExternalLink className="h-3 w-3" />
-          <span className="text-ash-200">{roast.domain}</span>
-          <span className="text-ash-600">•</span>
-          <span className="text-fire-400">{getBrutalityLabel(roast.brutalityLevel)} Mode</span>
-        </motion.div>
 
-        {/* Score Gauge */}
-        <div className="flex justify-center mb-8">
-          <ScoreGauge score={roast.overallScore} size={220} />
-        </div>
+      {/* ─── VOID ABOVE ─── */}
+      <div className="pt-16 sm:pt-28" />
 
-        {/* Vibe word */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mb-6"
-        >
-          <span className={`font-display text-5xl sm:text-7xl md:text-8xl lowercase leading-none ${vibeColor}`}>
-            &ldquo;{roast.vibe}&rdquo;
-          </span>
-        </motion.div>
-
-        {/* Executive summary */}
-        {roastData.executiveSummary && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="text-base sm:text-lg text-ash-300 max-w-2xl mx-auto leading-relaxed"
-          >
-            {roastData.executiveSummary}
-          </motion.p>
-        )}
+      {/* ─── THE SCORE — the mountain in the void ─── */}
+      <div className="flex justify-center mb-8 sm:mb-16">
+        <ScoreGauge score={roast.overallScore} size={280} />
       </div>
 
-      {/* ── MONEY LOSS ── */}
-      <div className="mb-12">
-        <MoneyLossCalculator
-          monthlyLoss={roast.totalMonthlyLoss}
-          yearlyLoss={roast.yearlyLoss}
-          scores={scores}
-        />
-      </div>
+      {/* ─── THE VIBE — a single utterance from the void ─── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+        className="text-center mb-16 sm:mb-24"
+      >
+        <span className={`font-display text-6xl sm:text-8xl md:text-9xl lowercase leading-none ${vibeClass}`}>
+          {roast.vibe}
+        </span>
+      </motion.div>
 
-      {/* ── CATEGORY CARDS ── */}
-      <div className="mb-12">
-        <motion.div
+      {/* ─── VOID BETWEEN ─── */}
+      <div className="mb-16 sm:mb-24" />
+
+      {/* ─── THE LOSS — quiet valley of pain ─── */}
+      <div className="text-center mb-20 sm:mb-32">
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center gap-3 mb-6"
+          transition={{ delay: 0.8 }}
+          className="text-ash-500 text-xs tracking-[0.3em] uppercase mb-6"
         >
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-ash-600 to-transparent" />
-          <span className="text-xs font-semibold text-ash-500 tracking-widest uppercase">Detailed Breakdown</span>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-ash-600 to-transparent" />
+          You are losing
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9 }}
+          className="font-display text-5xl sm:text-7xl font-bold text-fire-400 mb-3"
+        >
+          <CountUp value={roast.totalMonthlyLoss} duration={3} />
         </motion.div>
-
-        <div className="space-y-3">
-          {Object.entries(scores).map(([key, data], i) => {
-            const Icon = CATEGORY_ICONS[key] || Eye;
-            const isExpanded = expandedCategory === key;
-            const label = CATEGORY_LABELS[key] || key;
-
-            return (
-              <motion.div
-                key={key}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.06 }}
-              >
-                <TiltCard>
-                <button
-                  onClick={() => setExpandedCategory(isExpanded ? null : key)}
-                  className="w-full text-left glass-card rounded-2xl hover:border-fire-500/20 transition-all duration-300 group"
-                >
-                  <div className="p-5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        {/* Score badge */}
-                        <div
-                          className={`flex items-center justify-center w-12 h-12 rounded-xl font-display font-bold text-lg ${getScoreBgColor(data.score)} text-white shrink-0`}
-                        >
-                          {data.score}
-                        </div>
-                        <div>
-                          <div className="font-semibold text-white text-sm sm:text-base group-hover:text-fire-300 transition-colors">
-                            {label}
-                          </div>
-                          <div className="text-xs text-ash-500 mt-0.5 line-clamp-1">
-                            {data.roast}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 shrink-0">
-                        {data.moneyImpact > 0 && (
-                          <span className="hidden sm:inline text-xs font-semibold text-fire-400 bg-fire-500/10 px-2.5 py-1 rounded-full">
-                            −{formatCurrency(data.moneyImpact)}/mo
-                          </span>
-                        )}
-                        <div className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
-                          <svg className="h-4 w-4 text-ash-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Expanded detail */}
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      className="px-5 pb-5 border-t border-ash-700/50"
-                    >
-                      <div className="pt-4 space-y-4">
-                        <div className="rounded-xl bg-ash-900/60 border border-ash-700/30 p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-[10px] font-bold text-fire-400 uppercase tracking-widest bg-fire-500/10 px-2 py-0.5 rounded">
-                              🔥 ROAST
-                            </span>
-                          </div>
-                          <p className="text-sm text-ash-200 leading-relaxed italic">
-                            &ldquo;{data.roast}&rdquo;
-                          </p>
-                        </div>
-                        <div className="rounded-xl bg-ash-900/60 border border-emerald-500/10 p-4">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded">
-                              ✅ FIX
-                            </span>
-                          </div>
-                          <p className="text-sm text-emerald-300 leading-relaxed">
-                            {data.fix}
-                          </p>
-                        </div>
-                        {data.moneyImpact > 0 && (
-                          <div className="text-center py-2">
-                            <span className="text-xs text-ash-500">Monthly loss from this issue: </span>
-                            <span className="text-base font-bold text-fire-400">{formatCurrency(data.moneyImpact)}</span>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </button>
-                </TiltCard>
-              </motion.div>
-            );
-          })}
-        </div>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-base text-ash-500"
+        >
+          per month. That&apos;s <span className="text-ash-400"><CountUp value={roast.yearlyLoss} duration={3.5} /></span> per year.
+        </motion.p>
       </div>
 
-      {/* ── TOP 3 FIXES ── */}
-      {roastData.top3Fixes && roastData.top3Fixes.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="relative overflow-hidden rounded-3xl border border-emerald-500/15 bg-gradient-to-br from-emerald-500/5 via-ash-800/60 to-ash-800/30 p-6 sm:p-8 mb-12"
-        >
-          <div className="absolute top-0 right-0 w-40 h-40 rounded-bl-full bg-emerald-500/5" />
-          <div className="relative">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                <Zap className="h-5 w-5 text-emerald-400" />
-              </div>
-              <div>
-                <h3 className="font-display text-xl sm:text-2xl text-white">Top 3 Highest-Impact Fixes</h3>
-                <p className="text-xs text-ash-500 mt-0.5">Start here. These will give you the biggest bang for your effort.</p>
-              </div>
-            </div>
-            <div className="space-y-4">
-              {roastData.top3Fixes.map((fix, i) => (
-                <div key={i} className="flex gap-4 p-4 rounded-xl bg-ash-900/40 border border-ash-700/30">
-                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 font-display font-bold text-sm shrink-0">
-                    {i + 1}
+      {/* ─── VOID BETWEEN ─── */}
+      <div className="mb-16 sm:mb-24" />
+
+      {/* ─── THE CATEGORIES — islands in the void ─── */}
+      <div className="space-y-6 mb-20 sm:mb-32">
+        {Object.entries(scores).map(([key, data], i) => {
+          const isExpanded = expandedCategory === key;
+          const label = CATEGORY_LABELS[key] || key;
+          return (
+            <motion.div
+              key={key}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 + i * 0.12, duration: 0.6 }}
+            >
+              <button
+                onClick={() => setExpandedCategory(isExpanded ? null : key)}
+                className="w-full text-left group"
+              >
+                <div className="flex items-baseline justify-between py-3 border-b border-ash-800 hover:border-ash-600 transition-colors duration-500">
+                  <div className="flex items-baseline gap-4">
+                    <span className="font-display text-2xl font-bold text-ash-300">
+                      {data.score < 10 ? `0${data.score}` : data.score}
+                    </span>
+                    <span className="text-sm sm:text-base text-ash-300 group-hover:text-white transition-colors duration-300">
+                      {label}
+                    </span>
+                  </div>
+                  <span className={`text-xs text-ash-600 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
+                    ▼
                   </span>
-                  <p className="text-sm text-ash-200 leading-relaxed pt-1">{fix}</p>
                 </div>
-              ))}
-            </div>
+
+                {isExpanded && (
+                  <div className="pt-5 pb-2 space-y-5">
+                    <p className="text-sm text-ash-400 leading-relaxed italic">
+                      &ldquo;{data.roast}&rdquo;
+                    </p>
+                    <p className="text-sm text-emerald-400/80 leading-relaxed">
+                      {data.fix}
+                    </p>
+                    {data.moneyImpact > 0 && (
+                      <p className="text-xs text-fire-400/60">
+                        −{formatCurrency(data.moneyImpact)}/mo lost to this
+                      </p>
+                    )}
+                  </div>
+                )}
+              </button>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* ─── VOID BETWEEN ─── */}
+      <div className="mb-16 sm:mb-24" />
+
+      {/* ─── TOP FIXES — minimal, just the essentials ─── */}
+      {roastData.top3Fixes && roastData.top3Fixes.length > 0 && (
+        <div className="mb-20 sm:mb-32">
+          <p className="text-ash-500 text-xs tracking-[0.3em] uppercase mb-8">
+            Start here
+          </p>
+          <div className="space-y-5">
+            {roastData.top3Fixes.map((fix, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.5 + i * 0.1 }}
+                className="flex gap-4"
+              >
+                <span className="text-2xl font-display text-emerald-400/40 shrink-0 leading-none mt-0.5">
+                  {`0${i + 1}`}
+                </span>
+                <p className="text-sm text-ash-300 leading-relaxed pt-1">{fix}</p>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
-      {/* ── CTA: Fix Everything ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
-        className="relative overflow-hidden rounded-3xl border-2 border-fire-500/20 bg-gradient-to-br from-fire-500/10 via-ash-800/90 to-ash-800/50 p-8 sm:p-10 text-center mb-12"
-      >
-        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-fire-500/8 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-amber-500/5 blur-3xl pointer-events-none" />
-        <div className="relative">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-fire-500/10 border border-fire-500/20 px-3 py-1 text-xs font-medium text-fire-400 mb-4">
-            <Flame className="h-3 w-3" />
-            LIMITED AUDITS TODAY
-          </div>
+      {/* ─── VOID BETWEEN ─── */}
+      <div className="mb-16 sm:mb-24" />
 
-          <h3 className="font-display text-3xl sm:text-4xl text-white mb-3">
-            Fix Everything for{" "}
-            <span className="gradient-text-fire">Just $49</span>
-          </h3>
-          <p className="text-ash-300 text-sm sm:text-base max-w-lg mx-auto mb-6 leading-relaxed">
-            Every week you wait is costing you{" "}
-            <span className="text-fire-400 font-semibold">{formatCurrency(roast.totalMonthlyLoss / 4)}</span>.
-            Stop the bleeding. Get the complete report with every fix, priority roadmap, and a sharable PDF.
-          </p>
-
-          {/* Price comparison */}
-          <div className="flex items-center justify-center gap-4 mb-6 flex-wrap">
-            <div className="text-center">
-              <div className="text-xs text-ash-500 mb-1">You&apos;re Losing</div>
-              <div className="text-2xl sm:text-3xl font-display font-bold text-fire-400">
-                {formatCurrency(roast.totalMonthlyLoss)}/mo
-              </div>
-            </div>
-            <div className="text-ash-600 text-2xl">→</div>
-            <div className="text-center">
-              <div className="text-xs text-ash-500 mb-1">Fix It For</div>
-              <div className="text-2xl sm:text-3xl font-display font-bold text-white">
-                $49 <span className="text-sm font-normal text-ash-500">one-time</span>
-              </div>
-            </div>
-          </div>
-
-          <a
-            href="/pricing"
-            onClick={() => Analytics.ctaClicked("full_audit")}
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fire-500 to-fire-600 px-10 py-4 text-base font-bold text-white hover:from-fire-600 hover:to-fire-700 transition-all duration-300 shadow-lg shadow-fire-500/25 hover:shadow-xl hover:shadow-fire-500/30 active:scale-95"
-          >
-            <Flame className="h-5 w-5" />
-            Get Full Audit — $49
-          </a>
-          <p className="text-xs text-ash-600 mt-3">🔒 Secure payment via Paddle &amp; Razorpay</p>
-        </div>
-      </motion.div>
-
-      {/* ── SHARE SECTION ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1 }}
-        className="mb-12 text-center"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-ash-600 to-transparent" />
-          <span className="text-xs font-semibold text-ash-500 tracking-widest uppercase">Share the Damage</span>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-ash-600 to-transparent" />
-        </div>
-
-        <div className="flex justify-center gap-2.5 flex-wrap mb-4">
-          <button
-            onClick={shareTwitter}
-            className="flex items-center gap-2 rounded-xl bg-[#1DA1F2]/10 border border-[#1DA1F2]/20 px-5 py-3 text-sm font-semibold text-[#1DA1F2] hover:bg-[#1DA1F2]/20 hover:border-[#1DA1F2]/30 transition-all duration-300 active:scale-95"
-          >
-            <TwitterIcon /> Twitter
-          </button>
-          <button
-            onClick={shareLinkedIn}
-            className="flex items-center gap-2 rounded-xl bg-[#0A66C2]/10 border border-[#0A66C2]/20 px-5 py-3 text-sm font-semibold text-[#0A66C2] hover:bg-[#0A66C2]/20 hover:border-[#0A66C2]/30 transition-all duration-300 active:scale-95"
-          >
-            <LinkedinIcon /> LinkedIn
-          </button>
-          <button
-            onClick={copyLink}
-            className="flex items-center gap-2 rounded-xl bg-ash-700/50 border border-ash-600/50 px-5 py-3 text-sm font-semibold text-ash-200 hover:bg-ash-600 hover:border-ash-500 transition-all duration-300 active:scale-95"
-          >
-            <Copy className="h-4 w-4" /> Copy Link
-          </button>
-          <button
-            onClick={() => setShowShareCard(true)}
-            className="flex items-center gap-2 rounded-xl bg-ember-500/10 border border-ember-500/20 px-5 py-3 text-sm font-semibold text-ember-400 hover:bg-ember-500/20 hover:border-ember-500/30 transition-all duration-300 active:scale-95"
-          >
-            <Share2 className="h-4 w-4" /> Download Card
-          </button>
-        </div>
-
-        {/* Challenge */}
-        <button
-          onClick={challengeFriend}
-          className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fire-500/10 to-ember-500/10 border border-fire-500/15 px-6 py-2.5 text-sm font-medium text-ash-200 hover:border-fire-400/30 hover:from-fire-500/15 hover:to-ember-500/15 transition-all duration-300 active:scale-95"
+      {/* ─── THE CTA — the final peak ─── */}
+      <div className="text-center mb-24 sm:mb-36">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.7 }}
+          className="text-ash-600 text-xs tracking-[0.2em] uppercase mb-10"
         >
-          ⚔️ Challenge a friend to beat your {roast.overallScore}/10
-        </button>
-      </motion.div>
-
-      {/* ── FEEDBACK ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1 }}
-        className="mb-12 text-center"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-ash-600 to-transparent" />
-          <span className="text-xs font-semibold text-ash-500 tracking-widest uppercase">Rate This Roast</span>
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent via-ash-600 to-transparent" />
-        </div>
-        <FeedbackButtons roastId={roast.id} currentFeedback={roast.feedback} />
-      </motion.div>
-
-      {/* ── ROAST ANOTHER ── */}
-      <div className="text-center pb-10 space-y-4">
-        <a
-          href="/"
-          className="inline-flex items-center gap-2 rounded-2xl border border-ash-600/50 bg-ash-800/50 px-8 py-3.5 text-sm font-semibold text-ash-300 hover:bg-ash-700 hover:border-ash-500 transition-all duration-300 active:scale-95"
+          Stop the bleeding
+        </motion.p>
+        <motion.a
+          href="/pricing"
+          onClick={() => Analytics.ctaClicked("full_audit")}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.8, duration: 0.6 }}
+          className="inline-block rounded-2xl bg-gradient-to-b from-fire-500 to-fire-600 px-12 py-5 text-lg font-bold text-white hover:from-fire-400 hover:to-fire-500 active:scale-95 transition-all duration-300"
+          style={{ boxShadow: "0 0 60px rgba(233,69,96,0.25), 0 8px 32px rgba(233,69,96,0.15)" }}
         >
-          <Flame className="h-4 w-4 text-fire-400" />
-          Roast Another Website
-        </a>
-        <p className="text-xs text-ash-600">
-          Made changes?{" "}
-          <a href={`/?url=${encodeURIComponent(roast.url)}`} className="text-fire-400 hover:underline font-medium">
-            Re-roast this site
-          </a>{" "}
-          and track your improvement.
+          Get the Full Audit — $49
+        </motion.a>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2 }}
+          className="text-ash-600 text-xs mt-6"
+        >
+          {formatCurrency(roast.totalMonthlyLoss)}/mo in losses vs $49 one-time
+        </motion.p>
+      </div>
+
+      {/* ─── VOID AFTER ─── */}
+      <div className="mb-12" />
+
+      {/* ─── SHARE — whispered, not shouted ─── */}
+      <div className="text-center pb-8">
+        <div className="flex justify-center gap-3 flex-wrap">
+          <button onClick={shareTwitter} className="text-ash-600 hover:text-[#1DA1F2] transition-colors duration-300 p-2" title="Share on Twitter">
+            <TwitterIcon />
+          </button>
+          <button onClick={shareLinkedIn} className="text-ash-600 hover:text-[#0A66C2] transition-colors duration-300 p-2" title="Share on LinkedIn">
+            <LinkedinIcon />
+          </button>
+          <button onClick={copyLink} className="text-ash-600 hover:text-ash-300 transition-colors duration-300 p-2" title="Copy link">
+            <Copy className="h-4 w-4" />
+          </button>
+          <button onClick={challengeFriend} className="text-ash-600 hover:text-fire-400 transition-colors duration-300 p-2 text-xs" title="Challenge a friend">
+            ⚔️
+          </button>
+        </div>
+        <p className="text-ash-600 text-xs mt-4">
+          <a href={`/?url=${encodeURIComponent(roast.url)}`} className="hover:text-fire-400 transition-colors duration-300">Re-roast after fixing</a>
+          <span className="mx-2">·</span>
+          <a href="/" className="hover:text-fire-400 transition-colors duration-300">Roast another</a>
         </p>
       </div>
 
-      {/* Viral share modal */}
+      {/* ─── MODALS (unchanged) ─── */}
       {showViralShare && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowViralShare(false)}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setShowViralShare(false)}>
           <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="bg-ash-800 border border-ash-600 rounded-2xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-display text-xl text-white mb-4 text-center">🔥 Share This Roast</h3>
+            <h3 className="font-display text-xl text-white mb-4 text-center">Share This Roast</h3>
             <div className="space-y-2">
               <button onClick={() => { shareTwitter(); setShowViralShare(false); }} className="w-full rounded-lg bg-[#1DA1F2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#1a8cd8]">🐦 Share on Twitter/X</button>
               <button onClick={() => { window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`,"_blank"); }} className="w-full rounded-lg bg-[#0A66C2] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#0959a8]">💼 Share on LinkedIn</button>
               <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copied!"); setShowViralShare(false); }} className="w-full rounded-lg bg-ash-700 px-4 py-2.5 text-sm font-bold text-ash-200 hover:bg-ash-600">📋 Copy Link</button>
-              <button onClick={() => { window.location.href = `mailto:?subject=Your website got roasted 😂&body=Check out this savage roast of ${roast.domain}: ${window.location.href}`; }} className="w-full rounded-lg bg-ember-500/10 border border-ember-500/30 px-4 py-2.5 text-sm font-bold text-ember-400 hover:bg-ember-500/20">✉️ Email to site owner</button>
             </div>
             <button onClick={() => setShowViralShare(false)} className="w-full mt-3 text-sm text-ash-500 hover:text-ash-300">Close</button>
           </motion.div>
         </motion.div>
       )}
 
-      {/* Share card modal */}
       {showShareCard && (
         <ShareCard
           domain={roast.domain}
